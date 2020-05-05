@@ -7,6 +7,6 @@ public class Calculator {
     }
 
     public static void main(String[] args) {
-        System.out.println("Hello JUnit. cacerts check");
+        System.out.println("Hello JUnit. YEAHHHHHHHHHHH!!! ");
     }
 }
