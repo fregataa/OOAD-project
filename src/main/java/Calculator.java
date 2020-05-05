@@ -1,5 +1,5 @@
 public class Calculator {
     public static void main(String[] args) {
-        System.out.println("Hello World new Jenkins take5");
+        System.out.println("Hello Jira commit test");
     }
 }
