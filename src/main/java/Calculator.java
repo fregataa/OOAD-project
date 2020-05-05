@@ -7,6 +7,6 @@ public class Calculator {
     }
 
     public static void main(String[] args) {
-        System.out.println("Hello JUnit. fuck");
+        System.out.println("Hello JUnit. without after-build");
     }
 }
