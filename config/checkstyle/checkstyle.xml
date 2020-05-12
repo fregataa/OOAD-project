@@ -26,13 +26,13 @@
     </module>
     <!-- https://checkstyle.org/config_filters.html#SuppressionFilter -->
 
-    <!--
+
     <module name="SuppressionFilter">
         <property name="file" value="${org.checkstyle.google.suppressionfilter.config}"
                   default="checkstyle-suppressions.xml" />
         <property name="optional" value="true"/>
     </module>
-    -->
+
 
     <!-- Checks for whitespace                               -->
     <!-- See http://checkstyle.org/config_whitespace.html -->
@@ -96,16 +96,13 @@
                     INSTANCE_INIT, ANNOTATION_DEF, ENUM_DEF"/>
         </module>
 
-        <!--
-        <module name="SuppressionXpathSingleFilter">
-        -->
 
+        <module name="SuppressionXpathSingleFilter">
             <!-- suppresion is required till https://github.com/checkstyle/checkstyle/issues/7541 -->
-        <!--  <property name="id" value="RightCurlyAlone"/>
-          <property name="query" value="//RCURLY[parent::SLIST[count(./*)=1]
+            <property name="id" value="RightCurlyAlone"/>
+            <property name="query" value="//RCURLY[parent::SLIST[count(./*)=1]
                                                or preceding-sibling::*[last()][self::LCURLY]]"/>
-      </module>
-      -->
+        </module>
 
         <module name="WhitespaceAfter">
             <property name="tokens"
@@ -331,13 +328,11 @@
         </module>
         <!-- https://checkstyle.org/config_filters.html#SuppressionXpathFilter -->
 
-        <!--
         <module name="SuppressionXpathFilter">
             <property name="file" value="${org.checkstyle.google.suppressionxpathfilter.config}"
                       default="checkstyle-xpath-suppressions.xml" />
             <property name="optional" value="true"/>
         </module>
-        -->
 
     </module>
 </module>
