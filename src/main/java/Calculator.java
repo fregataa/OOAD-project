@@ -7,6 +7,6 @@ public class Calculator {
     }
 
     public static void main(String[] args) {
-        System.out.println("Hello Sonarqube. forth try ");
+        System.out.println("Hello Sonarqube. fifth try ");
     }
 }
