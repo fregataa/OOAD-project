@@ -19,12 +19,16 @@ test{
     useJUnit()
 }
 
-tasks.withType(Checkstyle) {
-    reports {
-        xml.enabled true
-        html.enabled true
-    }
-}
+//tasks.withType(Checkstyle) {
+//    reports {
+//        xml.enabled true
+//        html.enabled true
+//    }
+//}
+//
+//checkstyle {
+//    toolVersion = "7.6.1"
+//}
 
 pmd {
     consoleOutput = true
