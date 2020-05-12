@@ -16,3 +16,10 @@ dependencies {
 test{
     useJUnit()
 }
+
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'Calculator'
+    }
+}
