@@ -7,6 +7,13 @@ public class Calculator {
     }
 
     public static void main(String[] args) {
+        int a=0;
+        int b=1;
+        if(b==1){
+            System.out.println("branch in");
+        } else {
+            System.out.println("another branch in");
+        }
         System.out.println("Hello findbugs. welcome ");
     }
 }
