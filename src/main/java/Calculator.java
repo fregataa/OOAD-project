@@ -14,6 +14,6 @@ public class Calculator {
         } else {
             System.out.println("another branch in");
         }
-        System.out.println("Hello findbugs. welcome ");
+        System.out.println("Hello statics. R U ok? ");
     }
 }
