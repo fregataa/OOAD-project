@@ -7,7 +7,7 @@ public class Calculator {
     }
 
     public static void main(String[] args) {
-        int a=0;
+        int a=0, c;
         int b=0;
         if(b==1){
             System.out.println("branch in");
