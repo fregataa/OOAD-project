@@ -14,6 +14,6 @@ public class Calculator {
         } else {
             System.out.println("another branch in");
         }
-        System.out.println("all in Sonarqube. ");
+        System.out.println("hello Im dying. ");
     }
 }
