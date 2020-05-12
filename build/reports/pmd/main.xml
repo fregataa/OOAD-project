@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
+    version="6.21.0" timestamp="2020-05-13T00:00:37.129">
+<file name="D:\testGradleProject\src\main\java\Calculator.java">
+<violation beginline="4" endline="4" begincolumn="13" endcolumn="18" rule="UnusedLocalVariable" ruleset="Best Practices" class="Calculator" method="add" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.21.0/pmd_rules_java_bestpractices.html#unusedlocalvariable" priority="3">
+Avoid unused local variables such as 'result'.
+</violation>
+<violation beginline="5" endline="5" begincolumn="9" endcolumn="20" rule="OneDeclarationPerLine" ruleset="Best Practices" class="Calculator" method="add" variable="VariableDeclaratorId, VariableDeclaratorId" externalInfoUrl="https://pmd.github.io/pmd-6.21.0/pmd_rules_java_bestpractices.html#onedeclarationperline" priority="4">
+Use one line for each declaration, it enhances code readability.
+</violation>
+<violation beginline="10" endline="10" begincolumn="13" endcolumn="13" rule="UnusedLocalVariable" ruleset="Best Practices" class="Calculator" method="main" variable="a" externalInfoUrl="https://pmd.github.io/pmd-6.21.0/pmd_rules_java_bestpractices.html#unusedlocalvariable" priority="3">
+Avoid unused local variables such as 'a'.
+</violation>
+<violation beginline="10" endline="10" begincolumn="18" endcolumn="18" rule="UnusedLocalVariable" ruleset="Best Practices" class="Calculator" method="main" variable="c" externalInfoUrl="https://pmd.github.io/pmd-6.21.0/pmd_rules_java_bestpractices.html#unusedlocalvariable" priority="3">
+Avoid unused local variables such as 'c'.
+</violation>
+<violation beginline="10" endline="10" begincolumn="9" endcolumn="18" rule="OneDeclarationPerLine" ruleset="Best Practices" class="Calculator" method="main" variable="VariableDeclaratorId, VariableDeclaratorId" externalInfoUrl="https://pmd.github.io/pmd-6.21.0/pmd_rules_java_bestpractices.html#onedeclarationperline" priority="4">
+Use one line for each declaration, it enhances code readability.
+</violation>
+<violation beginline="13" endline="13" begincolumn="13" endcolumn="30" rule="SystemPrintln" ruleset="Best Practices" class="Calculator" method="main" externalInfoUrl="https://pmd.github.io/pmd-6.21.0/pmd_rules_java_bestpractices.html#systemprintln" priority="2">
+System.out.println is used
+</violation>
+<violation beginline="15" endline="15" begincolumn="13" endcolumn="30" rule="SystemPrintln" ruleset="Best Practices" class="Calculator" method="main" externalInfoUrl="https://pmd.github.io/pmd-6.21.0/pmd_rules_java_bestpractices.html#systemprintln" priority="2">
+System.out.println is used
+</violation>
+<violation beginline="17" endline="17" begincolumn="9" endcolumn="26" rule="SystemPrintln" ruleset="Best Practices" class="Calculator" method="main" externalInfoUrl="https://pmd.github.io/pmd-6.21.0/pmd_rules_java_bestpractices.html#systemprintln" priority="2">
+System.out.println is used
+</violation>
+</file>
+</pmd>
