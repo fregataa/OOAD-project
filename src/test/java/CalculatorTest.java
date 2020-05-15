@@ -15,4 +15,11 @@ public class CalculatorTest {
         int r = c.add();
         assertEquals(6, r);
     }
+
+    @Test
+    public void minus(){
+        Calculator c = new Calculator();
+        int r = c.minus();
+        assertEquals(4, r);
+    }
 }

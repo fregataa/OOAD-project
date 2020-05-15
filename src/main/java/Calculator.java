@@ -6,6 +6,13 @@ public class Calculator {
         return a+b;
     }
 
+    public int minus(){
+        int result;
+        int a=5;
+        int b=2;
+        return a-b;
+    }
+
     public static void main(String[] args) {
         int a=0, c;
         int b=0;
@@ -14,6 +21,6 @@ public class Calculator {
         } else {
             System.out.println("another branch in");
         }
-        System.out.println("hello testlink. welcome");
+        System.out.println("hello testlink. plus sonarqube welcome");
     }
 }
