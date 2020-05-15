@@ -21,6 +21,6 @@ public class Calculator {
         } else {
             System.out.println("another branch in");
         }
-        System.out.println("hello testlink. plus sonarqube welcome");
+        System.out.println("hello testlink. junit ignore failure");
     }
 }
