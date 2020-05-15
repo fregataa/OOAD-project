@@ -14,6 +14,6 @@ public class Calculator {
         } else {
             System.out.println("another branch in");
         }
-        System.out.println("hello sonarqube. second try");
+        System.out.println("hello testlink. welcome");
     }
 }
