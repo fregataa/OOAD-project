@@ -2,12 +2,15 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.21.0" timestamp="2020-05-13T00:00:37.719">
+    version="6.21.0" timestamp="2020-05-20T12:59:16.458">
 <file name="D:\testGradleProject\src\test\java\CalculatorTest.java">
 <violation beginline="9" endline="9" begincolumn="9" endcolumn="20" rule="JUnitAssertionsShouldIncludeMessage" ruleset="Best Practices" class="CalculatorTest" method="main" externalInfoUrl="https://pmd.github.io/pmd-6.21.0/pmd_rules_java_bestpractices.html#junitassertionsshouldincludemessage" priority="3">
 JUnit assertions should include a message
 </violation>
 <violation beginline="16" endline="16" begincolumn="9" endcolumn="20" rule="JUnitAssertionsShouldIncludeMessage" ruleset="Best Practices" class="CalculatorTest" method="add" externalInfoUrl="https://pmd.github.io/pmd-6.21.0/pmd_rules_java_bestpractices.html#junitassertionsshouldincludemessage" priority="3">
+JUnit assertions should include a message
+</violation>
+<violation beginline="23" endline="23" begincolumn="9" endcolumn="20" rule="JUnitAssertionsShouldIncludeMessage" ruleset="Best Practices" class="CalculatorTest" method="minus" externalInfoUrl="https://pmd.github.io/pmd-6.21.0/pmd_rules_java_bestpractices.html#junitassertionsshouldincludemessage" priority="3">
 JUnit assertions should include a message
 </violation>
 </file>

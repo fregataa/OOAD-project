@@ -21,6 +21,6 @@ public class Calculator {
         } else {
             System.out.println("another branch in");
         }
-        System.out.println("hello testlink. long time no see");
+        System.out.println("hello world. good bye testlink");
     }
 }

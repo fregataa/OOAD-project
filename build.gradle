@@ -20,13 +20,6 @@ test{
     ignoreFailures = true
 }
 
-//tasks.withType(Checkstyle) {
-//    reports {
-//        xml.enabled true
-//        html.enabled true
-//    }
-//}
-//
 checkstyle {
     toolVersion = "8.32"
     ignoreFailures = true
