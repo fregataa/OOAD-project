@@ -13,13 +13,13 @@ public class CalculatorTest {
     public void add() {
         Calculator c = new Calculator();
         int r = c.add();
-        assertEquals(6, r);
+        assertEquals(6, r);     // answer 6
     }
 
     @Test
     public void minus(){
         Calculator c = new Calculator();
         int r = c.minus();
-        assertEquals(4, r);
+        assertEquals(3, r);     // answer 3
     }
 }
