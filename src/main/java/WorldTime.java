@@ -2,10 +2,10 @@ import java.time.LocalDateTime;
 
 public class WorldTime {
     /*서울		ICN	+9
-    런던		LHR	+0
+    런던		    LHR	+0
     암스테르담	AMS	+1
     두바이		DXB	+4
-    홍콩		HKG	+8
+    홍콩		    HKG	+8
     시드니		SYD	+10
     로스엔젤레스	LAX	-8
     보스턴		BOS	-5
