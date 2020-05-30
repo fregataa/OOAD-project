@@ -1,0 +1,13 @@
+public class ModeSwitch{
+    private boolean [] enabledMode = new boolean[6];
+    private int currentMode;
+    private int maxCursor;
+    private int [] maxValuleOfCursor = new int[maxPage];
+    private int maxPage;
+
+    public void initialize(){}
+    public int nextMode(int currentMode){}
+    public void switchMode(){}
+    public void saveMode(boolean enableMode){}
+    public void timeOut(){}
+}
