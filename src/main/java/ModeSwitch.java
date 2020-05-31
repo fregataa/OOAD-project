@@ -20,8 +20,8 @@ public class ModeSwitch {
         currentMode = 0;
     }
 
-    public int initialize(){
-        return currentMode;
+    public void initialize(){
+        currentMode = 0;
     }
     public int nextMode(int currnetMode){
         return maxPage;
