@@ -1,8 +1,21 @@
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 public class Controller {
     private LocalDateTime timeValue;
+
+
+    /*
+    <modeIndicator index>
+    * 0 - TimeKeeping
+    * 1 - Alarm
+    * 2 - Stopwatch
+    * 3 - Timer
+    * 4 - WorldTime
+    * 5 - Turnip Calculator
+    */
     private Boolean[] modeIndicator = new Boolean[6];
+    private int currentMode;
     private String segment;
     private int currentCursor;
     private int maxCursor;
@@ -10,8 +23,9 @@ public class Controller {
     private int currentPage;
     private int maxPage;
     private int priceValue;
+    // 24 - true, 12 - false
     private Boolean isMorning;
-    private int currentMode;
+
     private int waitTime;
 
     //private Timer timer;
@@ -19,27 +33,72 @@ public class Controller {
     private WorldTime worldTime = new WorldTime();
     private TimeKeeping timeKeeping = new TimeKeeping();
     private Alarm alarm = new Alarm();
-    private TurnipCalculator turnipCalculator = new TurnipCalculator();
+    private TurnipCalc turnipCalculator = new TurnipCalc();
     private TurnipPrice turnipPrice = new TurnipPrice();
     private Buzzer buzzer = new Buzzer();
-
-
     private Timer timer = new Timer();
 
-    public void display() {
-
+    public int setCurrentMode() {
+        return this.currentMode;
     }
 
-    public void reqChangeTimeFormat() {
+    public void getCurrentMode(int currentMode) {
+        this.currentMode = currentMode;
+    }
 
+    Controller() {
+        currentMode = modeSwitch.initialize();
+        isMorning = true;
+    }
+
+
+    /* <modeIndicator index>
+     * 0 - TimeKeeping
+     * 1 - Alarm
+     * 2 - Stopwatch
+     * 3 - Timer
+     * 4 - WorldTime
+     * 5 - Turnip Calculator
+     */
+    public void display() {
+        //mode Indicator, isMorning, segment 를 UI에 전달
+        switch (currentMode) {
+            case 0:
+                System.out.println("TimeKeeping 모드");
+                break;
+            case 1:
+                System.out.println("Alarm 모드");
+                break;
+            case 2:
+                System.out.println("Stopwatch 모드");
+                break;
+            case 3:
+                System.out.println("Timer 모드");
+                break;
+            case 4:
+                System.out.println("WorldTime 모드");
+                break;
+            case 5:
+                System.out.println("Turnip Calculator 모드");
+                break;
+            default:
+                break;
+        }
+    }
+
+
+    public void reqChangeTimeFormat() {
+        timeFormatClac();
     }
 
     public void timeFormatClac() {
-
+        isMorning = false;
+        //둘이 바꿔주기
     }
 
     public void reqSetting() {
-
+        //timeValue = timeKeeping.getCurrentTime();
+        //showNextBlink
     }
 
     public void nextUnit() {
@@ -76,8 +135,7 @@ public class Controller {
 
     public void reqStartTimer() {
         //원래는 설정하는 타이머시간
-
-        timeValue = LocalDateTime.of(2020, 5,28,22,13);
+        timeValue = LocalDateTime.of(2020, 5,30,18,22);
         timer.startTimer(timeValue);
     }
 
@@ -169,4 +227,6 @@ public class Controller {
         for (int i = 0; i < 10000; i++) { }
         controller.reqStartTimer();
     }
+
 }
+
