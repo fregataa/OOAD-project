@@ -14,9 +14,10 @@ public class Controller {
    */
 
     private ZonedDateTime timeValue;
-    private Boolean[] modeIndicator = new Boolean[6];
+    private int[] modeIndicator = {1,1,1,1,0,0};
     private int currentMode;
-    private String segment;
+    private String segment1 = "000000";
+    private String segment2 = "set--01--";
     private int currentCursor;
     private int maxCursor;
     private int[] maxValueOfCursor;
@@ -35,7 +36,7 @@ public class Controller {
     private static int maxAlarmPage = 3;
     private LocalTime timerTime;
     private ZonedDateTime currentTime;
-    private LocalTime AlarmTime;
+    private LocalDateTime alarmTime;
     private static int maxTurnipValue = 600;
     private int turnipValue;
     private int year;
@@ -48,7 +49,11 @@ public class Controller {
 
     private TimeKeeping timeKeeping = new TimeKeeping();
     private Alarm[] alarm = new Alarm[4];
-    for(int i = 0;i<4;i++){ alarm[i] = new Alarm();}
+    /*
+    for(int i = 0; i<4; i++){
+        alarm[i] = new Alarm();
+    }
+    */
 
     private Stopwatch stopwatch = new Stopwatch();
     private Timer timer = new Timer();
@@ -66,9 +71,33 @@ public class Controller {
         this.currentMode = currentMode;
     }
 
+    public int[] getModeIndicator() {
+        return this.modeIndicator;
+    }
+
+    public void setModeIndicator(int[] mode) {
+        this.modeIndicator = mode;
+    }
+
+    public String getSegment1() {
+        return this.segment1;
+    }
+
+    public void setSegment1(String seg) {
+        this.segment1 = seg;
+    }
+
+    public String getSegment2() {
+        return this.segment2;
+    }
+
+    public void setSegment2(String seg) {
+        this.segment2 = seg;
+    }
+
     Controller() {
         currentMode = modeSwitch.initialize();
-        isMorning = true;
+        is24 = true;
     }
 
     public void display() {
@@ -102,13 +131,13 @@ public class Controller {
     }
 
     public void timeFormatCalc() {
-        if (isMorning == true) isMorning = false;
-        else isMorning = true;
+        if (is24 == true) is24 = false;
+        else is24 = true;
     }
 
     public void showNextBlink() {
     }
-    
+
     public int reqSetting() {
         //timeValue = timeKeeping.getCurrentTime();
         //showNextBlink
@@ -124,7 +153,7 @@ public class Controller {
                 sec = currentTime.getSecond();
 
                 return currentCursor;
-            break;
+
             case 1:
                 alarmTime = alarm[alarmPage].getAlarmValue();
                 hour = alarmTime.getHour();
@@ -132,7 +161,8 @@ public class Controller {
                 sec = alarmTime.getSecond();
                 return currentCursor;
             case 3:
-                timerTime = timer.getTimeValue();
+                //오류
+                //timerTime = timer.getTimeValue();
                 hour = timerTime.getHour();
                 min = timerTime.getMinute();
                 sec = timerTime.getSecond();
@@ -141,10 +171,13 @@ public class Controller {
                 System.out.println("WorldTime 모드");
                 break;
             case 5:
-                turnipValue = turnipPrice.inputPrice( int currentPage);
+                turnipValue = turnipPrice.inputPrice(currentPage);
             default:
                 break;
         }
+
+        //return값 다시 정해주기
+        return 0;
     }
 
     /*
@@ -160,8 +193,8 @@ public class Controller {
 
     //버튼이벤트
     public void nextUnit() {
-        if (currentCursor != maxCursor) cotroller.increaseUnit();
-        else controller.initUnit();
+        if (currentCursor != maxCursor) this.increaseUnit();
+        else this.initUnit();
     }
 
     public void increaseUnit() {
@@ -173,13 +206,14 @@ public class Controller {
     }
 
     public void changeUnitValue(int currentCursor) {
-        controller.changeValue();
-        if (value > maxValueOfCursor[currentCursor]) controller.minimizeValue();
-        else if (value < 0) controller.maximizeValue();
+        this.changeValue();
+        if (value > maxValueOfCursor[currentCursor]) this.minimizeValue();
+        else if (value < 0) this.maximizeValue();
     }
 
     public void changeValue() {
-        if (/*증가버튼*/) {
+        /*
+        if (증가버튼) {
             switch (currentCursor) {
                 case 7:
                     hour++;
@@ -199,7 +233,7 @@ public class Controller {
                 default:
                     break;
             }
-        } else if (/*감소버튼*/) {
+        } else if (감소버튼) {
             switch (currentCursor) {
                 case 7:
                     hour--;
@@ -220,17 +254,21 @@ public class Controller {
                     break;
             }
         }
+        */
     }
 
     public void minimizeValue() {
         value = 0;
     }
 
+
+    //여기서부터 UI돌아가는거 확인을 위해 주석처리합니다.
+
     public void maximizeValue() {
         /*currentCursor에따라 maxValue값이 다르다.
         value = maxValue; */
         switch (this.currentCursor) {
-            case
+            
         }
     }
 
@@ -262,7 +300,7 @@ public class Controller {
 
     //타이머
     public void reqStartTimer() {
-        timer.startTimer(timerTimeValue);
+        //timer.startTimer(timerTimeValue);
     }
 
     public void reqPauseTimer() {
@@ -275,19 +313,19 @@ public class Controller {
 
     //스탑워치
     public void reqStartStopWatch() {
-        stopWatch.startStopWatch();
+        stopwatch.startStopwatch();
     }
 
     public void reqPauseStopWatch() {
-        stopWatch.pauseStopWatch();
+        stopwatch.pauseStopwatch();
     }
 
     public void reqResetStopWatch() {
-        stopWatch.resetStopwatch();
+        stopwatch.resetStopwatch();
     }
 
     public void reqLapTime() {
-        stopWatch.reqLapTime();
+        //stopwatch.reqLapTime();
     }
 
     //알람
@@ -302,7 +340,7 @@ public class Controller {
     public void reqChangeIndicatedAlarm() {
         if (alarmPage != maxAlarmPage) alarmPage++;
         else alarmPage = 0;
-        return alarm[alarmPage].getAlarmValue();
+        //return alarm[alarmPage].getAlarmValue();
     }
 
     //세계시간
@@ -320,7 +358,7 @@ public class Controller {
      */
 
     public void ChangePriceValue() {
-        controller.changeValue();
+        this.changeValue();
         if (value > maxTurnipValue) minimizeValue();
         else if (value < 0) maximizeValue();
     }
@@ -331,7 +369,7 @@ public class Controller {
 
     public void reqChangeDate() {
         turnipValue = turnipPrice.nextPrice(currentPage);
-        return turnipValue;
+        //return turnipValue;
     }
 
     //모드스위치
@@ -346,18 +384,19 @@ public class Controller {
 
     public void reqSelectMode(int currentCursor) {
         if (selectedMode < 2) {
-            modeIndicator[currentCursor] = true;
+            modeIndicator[currentCursor] = 1;
             selectedMode++;
         } else if (selectedMode == 2) {
-            modeIndicator[currentCursor] = true;
-            modeSwitch.saveMode(modeIndicator);
+            modeIndicator[currentCursor] = 1;
+            //modeSwitch.saveMode(modeIndicator);
             //modeIndicator = modeSwitch.getEnabledMode();
             selectedMode = 0;
         }
     }
 
+
     public void reqUnselectMode(int currentCursor) {
-        modeIndicator[currentCursor] = false;
+        modeIndicator[currentCursor] = 0;
         selectedMode--;
     }
 
@@ -373,14 +412,19 @@ public class Controller {
         buzzer.stopBeep();
     }
 
-    public static void main(String[] args) {
-        Controller controller = new Controller();
-        /*
-        controller.reqStartTimer();
-        for (int i = 0; i < 10000; i++) { }
-        controller.reqPauseTimer();
-        for (int i = 0; i < 10000; i++) { }
-        controller.reqStartTimer();
-         */
+    //UI 확인용 Test Code
+    public void testA() {
+        segment1 = null;
+        segment1 = "081023";
+        setSegment1(segment1);
+        return;
     }
+
+    public void testB() {
+        modeIndicator[5] = 1;
+        modeIndicator[2] = 0;
+        setModeIndicator(modeIndicator);
+        return;
+    }
+
 }
