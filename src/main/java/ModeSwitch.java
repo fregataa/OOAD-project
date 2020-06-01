@@ -1,14 +1,30 @@
-public class ModeSwitch {
-    public boolean enabledMode[6] = {1,1,1,1,0,0};
-    public int currentMode;
-    public int maxCursor;
-    public int maxValueOfCursor;
-    public int maxPage;
-    public void initialize(){
 
+
+public class ModeSwitch {
+
+    private boolean[] enabledMode = {true, true, true, true, false, false};
+    private int currentMode;
+    private int maxCursor;
+    private int maxValueOfCursor;
+    private int maxPage;
+
+
+
+    /////////////////////////////////////////////
+
+
+    /////////////////////////////////////////////
+
+
+    ModeSwitch() {
+        currentMode = 0;
+    }
+
+    public void initialize(){
+        currentMode = 0;
     }
     public int nextMode(int currnetMode){
-
+        return maxPage;
     }
     public void switchMode(){
 
@@ -17,6 +33,7 @@ public class ModeSwitch {
 
     }
     public void timeOut(){
-        
+
     }
 }
+

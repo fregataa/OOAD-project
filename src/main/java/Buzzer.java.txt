@@ -1,7 +1,0 @@
-
-public class Buzzer{
-    private boolean isActivated;
-    
-    public void reqBeep(){}
-    public void stopBeep(){}
-}
