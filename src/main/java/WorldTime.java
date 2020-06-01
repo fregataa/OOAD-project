@@ -39,15 +39,15 @@ public class WorldTime {
 
 
     int nextWorldTime(int currentPage) {
-        worldTime = setTimeZone(location[++currentPage]);
+        //worldTime = setTimeZone(location[++currentPage]);
 
         return currentPage;
     }
 
     void changeTimeZone(int currentPage) {
         int time_difference = location[currentPage] - location[timezone];
-        currentDateTime = currentDateTime.plusHours(time_difference);
-        setCurrentTime(worldTime);
+        //currentDateTime = currentDateTime.plusHours(time_difference);
+        //setCurrentTime(worldTime);
     }
 }
 
