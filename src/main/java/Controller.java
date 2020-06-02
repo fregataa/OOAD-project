@@ -14,9 +14,14 @@ public class Controller {
    */
 
     //private ZonedDateTime timeValue; 삭제
-    private int[] modeIndicator = new int[6];
+
+    /* GUI 확인 임의 설정 */
+    private int[] modeIndicator = new int[]{1,1,1,1,0,0};
     private int currentMode;
-    private String segment;
+    private String segment1 = "000000";
+    private String segment2 = "set--01--";
+    /*---------------------*/
+
     private int currentCursor;
     private static int maxCursor = 5;
     private static int[] maxValueOfCursor = {23, 60, 60, 31, 12, 2030};
@@ -59,8 +64,45 @@ public class Controller {
     private ModeSwitch modeSwitch = new ModeSwitch();
     private Buzzer buzzer = new Buzzer();
 
+    ///////////////////////////////////////////////////////
+    public int getCurrentMode() {
+        return this.currentMode;
+    }
+
+    public void setCurrentMode(int currentMode) {
+        this.currentMode = currentMode;
+    }
+
+    public int[] getModeIndicator() {
+        return this.modeIndicator;
+    }
+
+    public void setModeIndicator(int[] mode) {
+        this.modeIndicator = mode;
+    }
+
+    public String getSegment1() {
+        return this.segment1;
+    }
+
+    public void setSegment1(String seg) {
+        this.segment1 = seg;
+    }
+
+    public String getSegment2() {
+        return this.segment2;
+    }
+
+    public void setSegment2(String seg) {
+        this.segment2 = seg;
+    }
+
+    ///////////////////////////////////////////////////////
+
+
     Controller() {
-        currentMode = modeSwitch.initialize();
+        modeSwitch.initialize();
+        setCurrentMode(0);
         is24 = true;
     }
 
@@ -363,15 +405,21 @@ public class Controller {
         buzzer.stopBeep();
     }
 
-    /*
-    public static void main(String[] args) {
 
-        controller.reqStartTimer();
-        for (int i = 0; i < 10000; i++) { }
-        controller.reqPauseTimer();
-        for (int i = 0; i < 10000; i++) { }
-        controller.reqStartTimer();
-
+    //UI 확인용 Test Code
+    public void testA() {
+        segment1 = null;
+        segment1 = "081023";
+        setSegment1(segment1);
+        return;
     }
-    */
+
+    public void testB() {
+        modeIndicator[5] = 1;
+        modeIndicator[2] = 0;
+        setModeIndicator(modeIndicator);
+        return;
+    }
+
+
 }

@@ -186,12 +186,12 @@ public class GUI extends JFrame implements ActionListener {
 
     public void pressButtonA() {
         //controller.getCurrentMode();
-        controller.reqModeSwitch();
+        controller.testA();
         System.out.println("press A");
     }
 
     public void pressButtonB() {
-        controller.reqSetting();
+        controller.testB();
         System.out.println("press B");
     }
 
