@@ -6,7 +6,7 @@ public class Timer extends TimerTask {
     private LocalDateTime timerTime;
     private LocalDateTime startTime;
     private int maxCursor;
-    private int maxValueofCoursor[];
+    private int maxValueofCursor[];
     private int maxPage;
     private int count_sec;
     private long count;
@@ -27,11 +27,11 @@ public class Timer extends TimerTask {
         }
     }
 
-    public void startTimer(LocalDateTime timeValue) {
+    public void startTimer(LocalTime timerValue) {
         isStartedTimer = true;
-        startTime = LocalDateTime.now();
-        count = ChronoUnit.SECONDS.between(startTime, timeValue);
-        count_sec = (int) count;
+        //startTime = LocalDateTime.now();
+        //count = timeValue.toSecondOfDay()
+        count_sec = timerValue.toSecondOfDay();
         stimer.schedule(this, 0,1000);
     }
 

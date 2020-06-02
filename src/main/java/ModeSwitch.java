@@ -1,5 +1,3 @@
-
-
 public class ModeSwitch {
 
     private boolean[] enabledMode = {true, true, true, true, false, false};
@@ -23,6 +21,7 @@ public class ModeSwitch {
     public void initialize(){
         currentMode = 0;
     }
+    public void
     public int nextMode(int currnetMode){
         return maxPage;
     }

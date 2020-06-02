@@ -11,7 +11,7 @@ class TimeKeeping {
     //    public
     //return current Time
     //for display and alarm
-    public LocalTime getTimeValue(){
+    public LocalTime getLocalTimeValue(){
         return currentTime.toLocalTime();
     }
 
