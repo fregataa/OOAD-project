@@ -1,6 +1,6 @@
 public class ModeSwitch {
 
-    private boolean[] enabledMode = {true, true, true, true, false, false};
+    private int[] enabledMode=new int[]{1, 1, 1, 1, 0, 0};
     private int currentMode;
     private int maxCursor;
     private int maxValueOfCursor;
@@ -21,18 +21,23 @@ public class ModeSwitch {
     public void initialize(){
         currentMode = 0;
     }
-    public void
-    public int nextMode(int currnetMode){
-        return maxPage;
+    public int nextMode(){
+        //enable된 모드 나올때까지 계속 증가시키기
+        do{
+            currentMode++;
+            currentMode = currentMode%6;
+        }while(enabledMode[currentMode] == 0);
+        return currentMode;
     }
     public void switchMode(){
 
     }
-    public void saveMode(boolean enabledMode){
-
+    public void saveMode(int[] enabledMode){
+        this.enabledMode = enabledMode;
     }
-    public void timeOut(){
-
+    public int timeOut(){
+        initialize();
+        return currentMode;
     }
 }
 
