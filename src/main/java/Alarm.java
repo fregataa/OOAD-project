@@ -12,6 +12,11 @@ public class Alarm{
     private int[] maxValueOfCursor = new int[]{};
     private int maxPage;
 
+    public Alarm() {
+        this.alarmTime = ZonedDateTime.now();
+        this.isActivated = false;
+    }
+
     public ZonedDateTime getAlarmValue(){
         return this.alarmTime;
     }

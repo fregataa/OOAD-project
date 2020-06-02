@@ -2,7 +2,7 @@ import java.time.LocalTime;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class StopWatch extends TimerTask{
+public class Stopwatch extends TimerTask{
     private LocalTime stopWatchTime = LocalTime.of(0,0,0);
     private int maxCursor;
     private int maxValueOfCursor[];
@@ -14,7 +14,7 @@ public class StopWatch extends TimerTask{
         System.out.println(this.stopwatchTime);
     }
 
-    public void startStopWatch(){
+    public void startStopwatch(){
         this.stopWatchTime = LocalTime.of(0,0,0);
         this.m_timer.schedule(this,0,1000);
     }

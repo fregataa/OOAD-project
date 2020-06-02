@@ -10,7 +10,8 @@ public class TurnipPrice {
     private int maxValueofCorsor[];
     private int maxPage;
 
-    ////
+
+    ///***controler부분
     private int tPrice;
     private int currentPage = 0;
     private int inputtedPrice = 0;
@@ -20,7 +21,6 @@ public class TurnipPrice {
 
         return tPrice;
     }
-    ///***controler부분
     public int changePriceValue(String input) {
         while((input == "C" || input == "D" )&& input != "B") {
             tPrice = tPrice + changeValue(input);
