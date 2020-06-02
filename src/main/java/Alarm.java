@@ -1,26 +1,21 @@
 import java.time.LocalTime;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Alarm{
-    private ZonedDateTime alarmTime;
+    private LocalTime alarmTime;
     private boolean isActivated;
     private int maxCursor;
     private int[] maxValueOfCursor = new int[]{};
     private int maxPage;
 
     public Alarm() {
-        this.alarmTime = ZonedDateTime.now();
+        this.alarmTime = LocalTime.of(00,00,00);
         this.isActivated = false;
     }
 
-    public ZonedDateTime getAlarmValue(){
+    public LocalTime getAlarmValue(){
         return this.alarmTime;
     }
-    public void saveAlarmTime(ZonedDateTime newAlarm){    //파라미터가 필요할 것 같다.
+    public void saveAlarmTime(LocalTime newAlarm){    //파라미터가 필요할 것 같다.
         this.alarmTime = newAlarm;
     }
     public void activateAlarm(){

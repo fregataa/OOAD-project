@@ -39,5 +39,13 @@ public class ModeSwitch {
         initialize();
         return currentMode;
     }
+
+    public int getMode() {
+        return this.currentMode;
+    }
+
+    public void setMode(int mode) {
+        this.currentMode = mode;
+    }
 }
 

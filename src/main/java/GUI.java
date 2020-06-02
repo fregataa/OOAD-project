@@ -17,6 +17,8 @@ public class GUI extends JFrame implements ActionListener {
     private int frameHeight = 640;
     private Controller controller;
 
+    private int pressed;
+
     public GUI() {
         this.controller = new Controller();
 
@@ -185,10 +187,6 @@ public class GUI extends JFrame implements ActionListener {
         }
     }
 
-
-
-
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==buttonA) {
@@ -235,24 +233,13 @@ public class GUI extends JFrame implements ActionListener {
 
     public void pressButtonB() {
         //controller.testB();
+        //무언가 설정 중엔 설정 완료로 동작. 설정중이 아닐 땐 모드 변경으로 동작하게.
         System.out.println("press B");
 
-        switch (controller.getCurrentMode()) {
-            case 0:
-                controller.reqModeSwitch();
-                break;
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-            default: return;
-        }
+        if(controller.getChanging())
+            controller.reqCompleteSetting();
+        else
+            controller.reqModeSwitch();
     }
 
     public void pressButtonC() {
@@ -296,6 +283,10 @@ public class GUI extends JFrame implements ActionListener {
         }
     }
 
+    //어느 버튼이 눌렸는지 Controller에 반환할 방법에 대한 고민?
+    public int getPressed() {
+        return this.pressed;
+    }
 
     public static void main(String[] args) {
         GUI.getGUIInstance();

@@ -20,16 +20,17 @@ public class Controller extends TimerTask {
 
     /* GUI 확인 임의 설정 */
     private int[] modeIndicator = new int[]{1,1,1,1,0,0};
-    private int currentMode;
+    //private int currentMode;
     private String segment1 = "000000";
     private String segment2 = "set--01--";
     private Boolean is24;  //isMorning->is24
+    private Boolean isChanging = false;
     /*---------------------*/
 
     private int currentCursor;
     private static int maxCursor = 5;
     private static int[] maxValueOfCursor = {23, 60, 60, 31, 12, 2030};
-    private int currentPage;
+    private int currentPage = 0;
     private int maxPage;
     private int priceValue;
     // 24 - true, 12 - false
@@ -58,7 +59,6 @@ public class Controller extends TimerTask {
 
     private TimeKeeping timeKeeping = new TimeKeeping();
     private Alarm[] alarm = new Alarm[4];
-    //for(int i=0; i<4; i++){ alarm[i] = new Alarm(); }
     private Stopwatch stopwatch = new Stopwatch();
     private Timer timer = new Timer();
     private WorldTime worldTime = new WorldTime();
@@ -77,11 +77,11 @@ public class Controller extends TimerTask {
     */
     ///////////////////////////////////////////////////////
     public int getCurrentMode() {
-        return this.currentMode;
+        return this.modeSwitch.getMode();
     }
 
     public void setCurrentMode(int currentMode) {
-        this.currentMode = currentMode;
+        this.modeSwitch.setMode(currentMode);
     }
 
     public int[] getModeIndicator() {
@@ -128,9 +128,10 @@ public class Controller extends TimerTask {
     public void run() {
         //mode Indicator, isMorning, segment 를 UI에 전달
         //TimerTask 에 의해 GUI 쪽에서 계속 불림.
+        for(int i=0; i<4; i++){ alarm[i] = new Alarm(); }
         GUI.getGUIInstance().invalidate();
         GUI.getGUIInstance().repaint();
-        switch (currentMode) {
+        switch (getCurrentMode()) {
             case 0:
                 System.out.println("TimeKeeping 모드");
                 currentTime = ZonedDateTime.now();
@@ -139,6 +140,9 @@ public class Controller extends TimerTask {
                 break;
             case 1:
                 System.out.println("Alarm 모드");
+                //선택한 알람 시간 보여주는 부분
+                if(is24 == true) this.setSegment1(alarm[currentPage].getAlarmValue().format(DateTimeFormatter.ofPattern("hhmmss")));
+                else this.setSegment1(alarm[currentPage].getAlarmValue().format(DateTimeFormatter.ofPattern("HHmmss")));
                 break;
             case 2:
                 System.out.println("Stopwatch 모드");
@@ -170,14 +174,15 @@ public class Controller extends TimerTask {
 
     //수정필요
     //public void showNextBlink() { currentCursor++; }
-
+    //커서 깜빡 : 선택한 부분 나타났다 사라졌다 하는 식으로 해야 할텐데
 
     // 현재 커서 위치와 시간값을 어떻게 동시에 보내면 좋을지?
     //=> 그냥 set 메소드만들어서 gui 쪽에서 부르면 됨.
     public int reqSetting() {
         currentCursor = 0;
+        isChanging = true;
         //showNextBlink
-        switch (currentMode) {
+        switch (getCurrentMode()) {
             case 0:
                 currentTime = timeKeeping.getCurrentTime();
                 year = currentTime.getYear();
@@ -190,7 +195,7 @@ public class Controller extends TimerTask {
                 this.setSegment1(currentTime.format(DateTimeFormatter.ofPattern("HHmmss")));
             break;
             case 1:
-                alarmTime = (alarm[currentPage].getAlarmValue()).toLocalTime();
+                alarmTime = (alarm[currentPage].getAlarmValue());
                 hour = alarmTime.getHour();
                 min = alarmTime.getMinute();
                 sec = alarmTime.getSecond();
@@ -246,7 +251,12 @@ public class Controller extends TimerTask {
           GUI 쪽에서 C/D 버튼에서 동시에 불려야하기 때문에 인자로 int button을 줄 수 밖에 없었음.
           changeUpValue()/changeDownValue()를 따로 만들지 않는 한 changevalue함수는 리턴값을 활용하기 힘듦.
         */
-        //value = changeValue();
+        /*
+        int button과 value부분의 주석을 해제하고 수저했는데, GUI에서 입력된 버튼 정보를 받아서 그것을 Controller에 반영하는 방법에 대한 고민이었습니다.
+        */
+        int button = GUI.getGUIInstance().getPressed();
+
+        value += changeValue(button);
         if (value > maxValueOfCursor[currentCursor]) minimizeValue();
         else if (value < 0) maximizeValue();
         return value;
@@ -258,9 +268,12 @@ public class Controller extends TimerTask {
         * plusYear/ plusMonth 등 저장된 Time 에 대한 요소를 자동으로 더해주는 메소드가 있음.
         * 따라서 int 형으로 선언하지 않아도 값 변경이 가능하며, 윤년과 월말에 대한 계산도 알아서 됨.
         */
+        //value값에 반영하기 위해 return할 변수 선언
+        int result = 0;
 
         //임의로 0을 up/ 1을 down 이라고
         if (button == 0) {
+            result = 1;
             switch (currentCursor) {
                 case 0:
                     return ++hour;
@@ -278,6 +291,7 @@ public class Controller extends TimerTask {
                     break;
             }
         } else if (button == 1) {
+            result = -1;
             switch (currentCursor) {
                 case 0:
                     return --hour;
@@ -295,9 +309,8 @@ public class Controller extends TimerTask {
                     break;
             }
         }
-
-        //return값 임의로 넣음.
-        return 0;
+        //0으로 초기화한 변수를 up일때 1, down일때 -1로 설정하여 value값과 더함
+        return result;
     }
 
     public void minimizeValue() {
@@ -305,11 +318,10 @@ public class Controller extends TimerTask {
     }
 
     public void maximizeValue() {
-        if(currentMode != 5) value = maxValueOfCursor[currentCursor];
+        if(getCurrentMode() != 5) value = maxValueOfCursor[currentCursor];
         else value = 600;
     }
 
-    //timeValue값 생각해보기
     public String reqCompleteSetting() {
         //아래도 마찬가지로 245 line 근처 changeValue() 함수 아래 주석을 보시면
         //그냥 자체 메소드 이용해서 저장한 값 저장하고, 불러오면 됨.
@@ -337,12 +349,11 @@ public class Controller extends TimerTask {
                 break;
         }
         */
-
+        isChanging = false;
         //return값 임의로 넣음
         return "000000";
     }
 
-    //여기부터 다시 수정
     //타이머
     public void reqStartTimer() {
         timer.startTimer(currentTime.toLocalTime());
@@ -445,7 +456,7 @@ public class Controller extends TimerTask {
     public void reqCancelSetIndicateMode() {
         /*timeKeeping모드로돌아간다.*/
         //modeIndicator = modeSwitch.getEnabledMode();
-        currentMode = 0;
+        setCurrentMode(0);
     }
 
     //추가한 메소드
@@ -459,6 +470,9 @@ public class Controller extends TimerTask {
         buzzer.stopBeep();
     }
 
+    public Boolean getChanging() {
+        return this.isChanging;
+    }
 
     //UI 확인용 Test Code
     public void testA() {
