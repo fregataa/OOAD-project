@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Timer;
 
 public class GUI extends JFrame implements ActionListener {
     private static GUI guiInstance;
@@ -15,7 +16,6 @@ public class GUI extends JFrame implements ActionListener {
     private int frameWidth = 510;
     private int frameHeight = 640;
     private Controller controller;
-
 
     public GUI() {
         this.controller = new Controller();
@@ -99,6 +99,9 @@ public class GUI extends JFrame implements ActionListener {
 
         add(pane);
         setVisible(true);
+
+        Timer guiUpdate = new Timer();
+        guiUpdate.schedule(controller, 0, 1000);
     }
 
     public class changeGUI extends JPanel {
@@ -125,22 +128,26 @@ public class GUI extends JFrame implements ActionListener {
 
         @Override
         public void paint(Graphics g) {
-            modeIndicator = controller.getModeIndicator();
+            //controller 쪽에서 정보를 가져오고, 해당 정보가 기존 정보와 다를 경우 다시 그려짐.
+            super.paintComponent(g);
+
+            /* AM/PM */
+            if(!controller.getIs24()) {
+                if(Integer.parseInt(controller.getSegment1().substring(0,1)) > 12) {
+                    this.image = loadImage("data/base/PM.png");
+                    g.drawImage(this.image, 115, 295, 20, 28, this);
+                }
+                else {
+                    this.image = loadImage("data/base/AM.png");
+                    g.drawImage(this.image, 115, 295, 20, 28, this);
+                }
+            }
+
+            /* 7/14 Segment 로 표현되는 두 줄 */
             segment1 = controller.getSegment1();
             segment2 = controller.getSegment2();
             segPath1 = new String[6];
             segPath2 = new String[9];
-            super.paintComponent(g);
-
-            for (int i = 0; i < modeIndicator.length; i++) {
-                if(controller.getCurrentMode() == i) g.setColor(Color.GREEN);
-                else {
-                    if (modeIndicator[i] == 1) g.setColor(Color.ORANGE);
-                    else g.setColor(Color.GRAY);
-                }
-                if (i < 3) g.fillRect((250 + 50 * i), 208, 10, 3);
-                else g.fillRect((270 + 50 * (i - 3)), 253, 10, 3);
-            }
 
             for (int i = 0; i < segment1.length(); i++) {
                 segPath1[i] = "data/mainseg/" + segment1.charAt(i) + ".png";
@@ -157,6 +164,23 @@ public class GUI extends JFrame implements ActionListener {
                 else g.drawImage(this.image, 158+(24*i), 385, 23, 35, this);
 
             }
+
+
+            /* ModeIndicator 활성화된 4개 모드와 현재 상태 */
+            modeIndicator = controller.getModeIndicator();
+
+            for (int i = 0; i < modeIndicator.length; i++) {
+                if(controller.getCurrentMode() == i) g.setColor(Color.GREEN);
+                else {
+                    if (modeIndicator[i] == 1) g.setColor(Color.ORANGE);
+                    else g.setColor(Color.GRAY);
+                }
+                if (i < 3) g.fillRect((250 + 50 * i), 208, 10, 3);
+                else g.fillRect((270 + 50 * (i - 3)), 253, 10, 3);
+            }
+
+
+
 
         }
     }
@@ -186,21 +210,90 @@ public class GUI extends JFrame implements ActionListener {
 
     public void pressButtonA() {
         //controller.getCurrentMode();
-        controller.testA();
+        //controller.testA();
         System.out.println("press A");
+
+        switch (controller.getCurrentMode()) {
+            case 0:
+                controller.reqChangeTimeFormat();
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+                default: return;
+        }
+
+
     }
 
     public void pressButtonB() {
-        controller.testB();
+        //controller.testB();
         System.out.println("press B");
+
+        switch (controller.getCurrentMode()) {
+            case 0:
+                controller.reqModeSwitch();
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            default: return;
+        }
     }
 
     public void pressButtonC() {
         System.out.println("press C");
+
+        switch (controller.getCurrentMode()) {
+            case 0:
+                controller.reqSetting();
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            default: return;
+        }
     }
 
     public void pressButtonD() {
         System.out.println("press D");
+
+        switch (controller.getCurrentMode()) {
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            default: return;
+        }
     }
 
 

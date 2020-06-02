@@ -16,6 +16,11 @@ public class TurnipPrice {
     private int currentPage = 0;
     private int inputtedPrice = 0;
 
+    public int getTurnipPrice(int page) {
+        //수정해야함. controller에 있어서 만들었음.
+        return 0;
+    }
+
     public int reqInputPrice() {
         tPrice = inputPrice(currentPage);
 
