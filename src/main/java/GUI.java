@@ -103,7 +103,7 @@ public class GUI extends JFrame implements ActionListener {
         setVisible(true);
 
         Timer guiUpdate = new Timer();
-        guiUpdate.schedule(controller, 0, 1000);
+        guiUpdate.schedule(controller, 0, 500);
     }
 
     public class changeGUI extends JPanel {
@@ -133,23 +133,31 @@ public class GUI extends JFrame implements ActionListener {
             //controller 쪽에서 정보를 가져오고, 해당 정보가 기존 정보와 다를 경우 다시 그려짐.
             super.paintComponent(g);
 
-            /* AM/PM */
-            if(!controller.getIs24()) {
-                if(Integer.parseInt(controller.getSegment1().substring(0,1)) > 12) {
-                    this.image = loadImage("data/base/PM.png");
-                    g.drawImage(this.image, 115, 295, 20, 28, this);
-                }
-                else {
-                    this.image = loadImage("data/base/AM.png");
-                    g.drawImage(this.image, 115, 295, 20, 28, this);
-                }
-            }
-
             /* 7/14 Segment 로 표현되는 두 줄 */
             segment1 = controller.getSegment1();
             segment2 = controller.getSegment2();
             segPath1 = new String[6];
             segPath2 = new String[9];
+
+            /* AM/PM */
+            if(!controller.getIs24()) {
+                int seg12H = Integer.parseInt(segment1);
+                if(seg12H > 120000) {
+                    this.image = loadImage("data/base/PM.png");
+                    //12엔 0 아닌 12로 표시, 1시엔 1로 표시
+                    if(seg12H > 130000){
+                        segment1 = Integer.toString(seg12H%120000);
+                        if(seg12H < 220000){
+                            segment1 = "0"+segment1;
+                        }
+                    }
+                }
+                else {
+                    this.image = loadImage("data/base/AM.png");
+
+                }
+                g.drawImage(this.image, 115, 295, 20, 28, this);
+            }
 
             for (int i = 0; i < segment1.length(); i++) {
                 segPath1[i] = "data/mainseg/" + segment1.charAt(i) + ".png";
@@ -213,7 +221,10 @@ public class GUI extends JFrame implements ActionListener {
 
         switch (controller.getCurrentMode()) {
             case 0:
-                controller.reqChangeTimeFormat();
+                if(controller.getChanging())
+                    controller.nextUnit();
+                else
+                    controller.reqChangeTimeFormat();
                 break;
             case 1:
                 break;
@@ -247,7 +258,10 @@ public class GUI extends JFrame implements ActionListener {
 
         switch (controller.getCurrentMode()) {
             case 0:
-                controller.reqSetting();
+                if(controller.getChanging())
+                    controller.changeUnitValue(1);
+                else
+                    controller.reqSetting();
                 break;
             case 1:
                 break;
@@ -268,6 +282,11 @@ public class GUI extends JFrame implements ActionListener {
 
         switch (controller.getCurrentMode()) {
             case 0:
+                if(controller.getChanging())
+                    controller.changeUnitValue(-1);
+                else
+                    controller.reqSetting();
+
                 break;
             case 1:
                 break;

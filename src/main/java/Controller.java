@@ -3,7 +3,11 @@ import java.time.ZonedDateTime;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.TimerTask;
+import java.lang.Math;
+import static java.time.temporal.TemporalAdjusters.*;
+
 
 public class Controller extends TimerTask {
     /*
@@ -29,7 +33,7 @@ public class Controller extends TimerTask {
 
     private int currentCursor;
     private static int maxCursor = 5;
-    private static int[] maxValueOfCursor = {23, 60, 60, 31, 12, 2030};
+    private static int[] maxValueOfCursor = {23, 59, 59, 31, 12, 2030};
     private int currentPage = 0;
     private int maxPage;
     private int priceValue;
@@ -119,6 +123,7 @@ public class Controller extends TimerTask {
 
 
     Controller() {
+        for(int i=0; i<4; i++){ alarm[i] = new Alarm(); }
         modeSwitch.initialize();
         setCurrentMode(0);
         is24 = true;
@@ -126,23 +131,33 @@ public class Controller extends TimerTask {
 
     @Override
     public void run() {
+
+//        if(isChanging){
+//            System.out.println("세팅");
+//            return;
+//        }
         //mode Indicator, isMorning, segment 를 UI에 전달
         //TimerTask 에 의해 GUI 쪽에서 계속 불림.
-        for(int i=0; i<4; i++){ alarm[i] = new Alarm(); }
+
         GUI.getGUIInstance().invalidate();
         GUI.getGUIInstance().repaint();
         switch (getCurrentMode()) {
             case 0:
                 System.out.println("TimeKeeping 모드");
-                currentTime = ZonedDateTime.now();
-                if(is24 == true) this.setSegment1(currentTime.format(DateTimeFormatter.ofPattern("hhmmss")));
-                else this.setSegment1(currentTime.format(DateTimeFormatter.ofPattern("HHmmss")));
+
+                if(isChanging == false) {
+                    currentTime = timeKeeping.getCurrentTime();
+                }
+                //HH로 줘야만 제대로 작동합니다.
+                this.setSegment1(currentTime.format(DateTimeFormatter.ofPattern("HHmmss")));
+                this.setSegment2(currentTime.format(DateTimeFormatter.ofPattern("eeeyyMMdd", Locale.ENGLISH)));
                 break;
             case 1:
                 System.out.println("Alarm 모드");
                 //선택한 알람 시간 보여주는 부분
-                if(is24 == true) this.setSegment1(alarm[currentPage].getAlarmValue().format(DateTimeFormatter.ofPattern("hhmmss")));
-                else this.setSegment1(alarm[currentPage].getAlarmValue().format(DateTimeFormatter.ofPattern("HHmmss")));
+                this.setSegment1(alarm[currentPage].getAlarmValue().format(DateTimeFormatter.ofPattern("HHmmss")));
+//                this.setSegment2("--0"+ currentPage +"--");
+//                this.setSegment2("--0"+ currentPage +"--");
                 break;
             case 2:
                 System.out.println("Stopwatch 모드");
@@ -184,15 +199,15 @@ public class Controller extends TimerTask {
         //showNextBlink
         switch (getCurrentMode()) {
             case 0:
-                currentTime = timeKeeping.getCurrentTime();
-                year = currentTime.getYear();
-                month = currentTime.getMonthValue();
-                day = currentTime.getDayOfMonth();
-                hour = currentTime.getHour();
-                min = currentTime.getMinute();
-                sec = currentTime.getSecond();
+                this.currentTime = timeKeeping.getCurrentTime();
+//                year = currentTime.getYear();
+//                month = currentTime.getMonthValue();
+//                day = currentTime.getDayOfMonth();
+//                hour = currentTime.getHour();
+//                min = currentTime.getMinute();
+//                sec = currentTime.getSecond();
                 //아래와 같이 currentTime.format(DateTimeFormatter.ofPattern("HHmmss"))사용하면 됨.(String 전환)
-                this.setSegment1(currentTime.format(DateTimeFormatter.ofPattern("HHmmss")));
+                this.setSegment1(this.currentTime.format(DateTimeFormatter.ofPattern("HHmmss")));
             break;
             case 1:
                 alarmTime = (alarm[currentPage].getAlarmValue());
@@ -245,7 +260,8 @@ public class Controller extends TimerTask {
         currentCursor = 0;
     }
 
-    public int changeUnitValue() {
+    public void changeUnitValue(int increase) {
+
         /*
           아래 주석 처리한 이유는 controller에서의 changevalue함수는
           GUI 쪽에서 C/D 버튼에서 동시에 불려야하기 때문에 인자로 int button을 줄 수 밖에 없었음.
@@ -254,12 +270,57 @@ public class Controller extends TimerTask {
         /*
         int button과 value부분의 주석을 해제하고 수저했는데, GUI에서 입력된 버튼 정보를 받아서 그것을 Controller에 반영하는 방법에 대한 고민이었습니다.
         */
-        int button = GUI.getGUIInstance().getPressed();
+//        int button = GUI.getGUIInstance().getPressed();
 
-        value += changeValue(button);
-        if (value > maxValueOfCursor[currentCursor]) minimizeValue();
-        else if (value < 0) maximizeValue();
-        return value;
+//        changeValue(button);
+        currentTime.getHour();
+//        if (value > maxValueOfCursor[currentCursor]) minimizeValue();
+        int value;
+        switch(currentCursor){
+        case 0:
+            value = currentTime.getHour();
+            value = increase + value;
+            if (value > maxValueOfCursor[currentCursor]) value = 0;
+            else if (value < 0 ) value = maxValueOfCursor[currentCursor];
+            currentTime=currentTime.withHour(value);
+            break;
+        case 1:
+            value = currentTime.getMinute();
+            value = increase + value;
+            if (value > maxValueOfCursor[currentCursor]) value = 0;
+            else if (value < 0 ) value = maxValueOfCursor[currentCursor];
+            currentTime=currentTime.withMinute(value);
+            break;
+        case 2:
+            value = currentTime.getSecond();
+            value = increase + value;
+            if (value > maxValueOfCursor[currentCursor]) value = 0;
+            else if (value < 0 ) value = maxValueOfCursor[currentCursor];
+            currentTime=currentTime.withSecond(value);
+            break;
+        case 3:
+            value = currentTime.getDayOfMonth();
+            value = increase + value;
+//            System.out.println((currentTime.with(lastDayOfMonth())).getDayOfMonth());
+            if (value > ((currentTime.with(lastDayOfMonth())).getDayOfMonth())) value = 1;
+            else if (value < 1 ) value = (currentTime.with(lastDayOfMonth())).getDayOfMonth();
+            currentTime=currentTime.withDayOfMonth(value);
+            break;
+        case 4:
+            value = currentTime.getMonthValue();
+            value = increase + value;
+            if (value > maxValueOfCursor[currentCursor]) value = 1;
+            else if (value < 1 ) value = maxValueOfCursor[currentCursor];
+            currentTime=currentTime.withMonth(value);
+            break;
+        case 5:
+            currentTime=currentTime.plusYears(increase);
+            break;
+
+        }
+        System.out.println(currentTime);
+//        else if (value < 0) maximizeValue();
+        return ;
     }
 
     public int changeValue(int button) {
@@ -325,31 +386,31 @@ public class Controller extends TimerTask {
     public String reqCompleteSetting() {
         //아래도 마찬가지로 245 line 근처 changeValue() 함수 아래 주석을 보시면
         //그냥 자체 메소드 이용해서 저장한 값 저장하고, 불러오면 됨.
-        /*
-        switch (currentMode) {
+        switch (getCurrentMode()) {
             case 0:
-                currentTime.of(year, month, day, hour, min, sec);
-                timeKeeping.saveTime(currentTime);
-                return (timeKeeping.getCurrentTime()).toString();
+                timeKeeping.setCurrentTime(this.currentTime);
+                break;
             case 1:
-                alarmTime.of(hour, min, sec);
-                alarm[alarmPage].saveAlarm(alarmTime);
-                return (alarm[alarmPage].getAlarmValue()).toString();
+
+
+                break;
+            case 2:
+
+                break;
             case 3:
-                timerTime.of(hour, min, sec);
-                timer.saveTimer(timerTime);
-                return (timer.getTimeValue()).toString;
+
+
+                break;
             case 4:
-                System.out.println("WorldTime 모드");
+
                 break;
             case 5:
-                turnipPrice.savePrice(value);
-                return Integer.toString(value);
+                break;
             default:
                 break;
         }
-        */
         isChanging = false;
+
         //return값 임의로 넣음
         return "000000";
     }

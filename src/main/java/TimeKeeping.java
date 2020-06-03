@@ -2,12 +2,14 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 
 class TimeKeeping {
     public static int maxCursor = 6 ;
     public int[] maxValueCursor = {60,60,60,60,60,60};
     private ZoneId timeZone = ZoneId.of("Asia/Seoul");
     private ZonedDateTime currentTime = ZonedDateTime.now(timeZone);
+    private long subTime;
     //    public
     //return current Time
     //for display and alarm
@@ -18,11 +20,13 @@ class TimeKeeping {
     //return ZonedDateTime
     //for WorldTime
     public ZonedDateTime getCurrentTime(){
+        currentTime = currentTime.now().plusSeconds(subTime);
         return currentTime;
     }
 
     public void setCurrentTime(ZonedDateTime Time){
-        currentTime = Time;
+        subTime=ChronoUnit.SECONDS.between(currentTime.now(), Time);
+
     }
 
 
