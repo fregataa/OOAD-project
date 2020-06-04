@@ -190,7 +190,7 @@ public class GUI extends JFrame implements ActionListener {
             /* ModeIndicator 활성화된 4개 모드와 현재 상태 */
             modeIndicator = controller.getModeIndicator();
 
-            if(controller.getIsSelectingMode() == false){
+            if(!controller.getIsSelectingMode()){
                 for (int i = 0; i < modeIndicator.length; i++) {
                     if(controller.getCurrentMode() == i) g.setColor(Color.GREEN);
                     else {
@@ -201,30 +201,17 @@ public class GUI extends JFrame implements ActionListener {
                     else g.fillRect((270 + 50 * (i - 3)), 253, 10, 3);
                 }
             }
-            else{
+            else {
                 for (int i = 0; i < modeIndicator.length; i++) {
-                    if(controller.getCurrentIndicator() == i) g.setColor(Color.GREEN);
+                    if (controller.getCurrentIndicator() == i) g.setColor(Color.GREEN);
                     else {
-                        if (modeIndicator[i] == 1) g.setColor(Color.ORANGE);
-                        else g.setColor(Color.GRAY);
-                    }
-                    if (i < 3) g.fillRect((250 + 50 * i), 208, 10, 3);
-                    else g.fillRect((270 + 50 * (i - 3)), 253, 10, 3);
-                }
-
-            }
-            if(controller.getTimeout().getWaitTime().toSecondOfDay()>60){
-                for (int i = 0; i < modeIndicator.length; i++) {
-                    if(controller.getCurrentIndicator() == i) g.setColor(Color.GREEN);
-                    else {
-                        if (modeIndicator[i] == 1) g.setColor(Color.ORANGE);
+                        if (controller.getModeIndicator()[i] == 1) g.setColor(Color.ORANGE);
                         else g.setColor(Color.GRAY);
                     }
                     if (i < 3) g.fillRect((250 + 50 * i), 208, 10, 3);
                     else g.fillRect((270 + 50 * (i - 3)), 253, 10, 3);
                 }
             }
-
         }
     }
 
