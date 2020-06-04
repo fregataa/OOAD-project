@@ -279,7 +279,10 @@ public class GUI extends JFrame implements ActionListener {
                 controller.reqChangeWorldTime();
                 break;
             case 5:
-                if(controller.getChanging())
+                if(controller.getChanging()){
+
+                }
+                else
                     controller.reqChangeDate();
                 break;
             default: return;

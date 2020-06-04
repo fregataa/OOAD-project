@@ -36,9 +36,8 @@ class TimeKeeping {
         return currentTime;
     }
 
-    public void setCurrentTime(ZonedDateTime Time){
+    public void setSubTime(ZonedDateTime Time){
         subTime=ChronoUnit.SECONDS.between(currentTime.now(timeZone), Time);
-
     }
 
 

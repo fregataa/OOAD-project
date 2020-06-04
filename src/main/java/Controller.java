@@ -134,6 +134,7 @@ public class Controller extends TimerTask {
         modeSwitch.initialize();
         setCurrentMode(0);
         is24 = true;
+        modeIndicator=modeSwitch.getEnabledMode();
 
     }
 
@@ -155,67 +156,68 @@ public class Controller extends TimerTask {
         }
         else{
             switch (getCurrentMode()) {
-                case 0:
-                    System.out.println("TimeKeeping 모드");
+            case 0:
+                System.out.println("TimeKeeping 모드");
 
-                    if(isChanging == false) {
-                        currentTime = timeKeeping.getCurrentTime();
-                    }
-                    //HH로 줘야만 제대로 작동합니다.
-                    this.setSegment1(currentTime.format(DateTimeFormatter.ofPattern("HHmmss")));
-                    this.setSegment2(currentTime.format(DateTimeFormatter.ofPattern("eeeyyMMdd", Locale.ENGLISH)));
-                    break;
-                case 1:
-                    System.out.println("Alarm 모드");
-                    //선택한 알람 시간 보여주는 부분
-                    String temp = "-----0"+Integer.toString(currentPage+1)+"--";
-                    this.setSegment1(alarmTime.format(DateTimeFormatter.ofPattern("HHmmss")));
+                if(isChanging == false) {
+                    currentTime = timeKeeping.getCurrentTime();
+                }
+                //HH로 줘야만 제대로 작동합니다.
+                this.setSegment1(currentTime.format(DateTimeFormatter.ofPattern("HHmmss")));
+                this.setSegment2(currentTime.format(DateTimeFormatter.ofPattern("eeeyyMMdd", Locale.ENGLISH)));
+                break;
+            case 1:
+                System.out.println("Alarm 모드");
+                //선택한 알람 시간 보여주는 부분
+                String temp = "-----0"+Integer.toString(currentPage+1)+"--";
+                this.setSegment1(alarmTime.format(DateTimeFormatter.ofPattern("HHmmss")));
 
-                    if(isActivatedAlarm())
-                        setSegment2("set"+temp.substring(3));
-                    else
-                        setSegment2("---"+temp.substring(3));
+                if(isActivatedAlarm())
+                    setSegment2("set"+temp.substring(3));
+                else
+                    setSegment2("---"+temp.substring(3));
 
-                    break;
-                case 2:
-                    this.setSegment1(stopwatch.getStopwatchTime().format(DateTimeFormatter.ofPattern("HHmmss")));
-                    if(stopwatch.getLapTime()==LocalTime.of(0,0,0))
-                        this.setSegment2("lap------");
-                    else
-                        this.setSegment2("lap" + stopwatch.getLapTime().format(DateTimeFormatter.ofPattern("HHmmss")));
-                    System.out.println("Stopwatch 모드");
-                    break;
-                case 3:
-                    if(isActivatedTimer) {
-                        this.setSegment1(timer.getRunTime().format(DateTimeFormatter.ofPattern("HHmmss")));
-                        this.setSegment2("------run");
+                break;
+            case 2:
+                this.setSegment1(stopwatch.getStopwatchTime().format(DateTimeFormatter.ofPattern("HHmmss")));
+                if(stopwatch.getLapTime()==LocalTime.of(0,0,0))
+                    this.setSegment2("lap------");
+                else
+                    this.setSegment2("lap" + stopwatch.getLapTime().format(DateTimeFormatter.ofPattern("HHmmss")));
+                System.out.println("Stopwatch 모드");
+                break;
+            case 3:
+                if(isActivatedTimer) {
+                    this.setSegment1(timer.getRunTime().format(DateTimeFormatter.ofPattern("HHmmss")));
+                    this.setSegment2("------run");
+                }
+                else if(!isActivatedTimer) {
+                    if(isChanging) {
+                        this.setSegment1(this.currentTime.format(DateTimeFormatter.ofPattern("HHmmss")));
+                        this.setSegment2("------set");
+                    } else {
+                        this.setSegment1(timer.getTimerTime());
+                        this.setSegment2("-----wait");
                     }
-                    else if(!isActivatedTimer) {
-                        if(isChanging) {
-                            this.setSegment1(this.currentTime.format(DateTimeFormatter.ofPattern("HHmmss")));
-                            this.setSegment2("------set");
-                        } else {
-                            this.setSegment1(timer.getTimerTime());
-                            this.setSegment2("-----wait");
-                        }
-                    }
-                    System.out.println("Timer 모드");
-                    break;
-                case 4:
-                    System.out.println("WorldTime 모드");
-                    currentTime=worldTime.getWorldTime();
-                    this.setSegment1(currentTime.format(DateTimeFormatter.ofPattern("HHmmss")));
-                    this.setSegment2(worldTime.getUTCString());
-                    break;
-                case 5:
-                    System.out.println("Turnip Calculator 모드");
-                    if(isChanging == false) {
-                        turnipValue=turnipPrice.getTurnipPrice();
-                    }
-                    this.setSegment1(String.format("%04d", turnipValue)+"  ");
-                    break;
-                default:
-                    break;
+                }
+                System.out.println("Timer 모드");
+                break;
+            case 4:
+                System.out.println("WorldTime 모드");
+                currentTime=worldTime.getWorldTime();
+                this.setSegment1(currentTime.format(DateTimeFormatter.ofPattern("HHmmss")));
+                this.setSegment2(worldTime.getUTCString());
+                break;
+            case 5:
+                System.out.println("Turnip Calculator 모드");
+                if(isChanging == false) {
+                    turnipValue=turnipPrice.getTurnipPrice();
+                }
+                this.setSegment1("-" + String.format("%03d", turnipValue)+"--");
+                this.setSegment2(turnipPrice.getTurnipDay());
+                break;
+            default:
+                break;
             }
 
         }
@@ -233,6 +235,10 @@ public class Controller extends TimerTask {
 
 
     public void showNextBlink() {
+        if (modeSwitch.getMode() == 5){
+            this.setSegment1("------");
+            return;
+        }
         switch (currentCursor) {
             case 0:
                 this.setSegment1(this.currentTime.format(DateTimeFormatter.ofPattern("--mmss")));
@@ -285,6 +291,7 @@ public class Controller extends TimerTask {
                 break;
             case 5:
                 turnipValue = turnipPrice.getTurnipPrice();
+                if (turnipValue==0) turnipValue = 90;
             default:
                 break;
         }
@@ -410,7 +417,7 @@ public class Controller extends TimerTask {
         //그냥 자체 메소드 이용해서 저장한 값 저장하고, 불러오면 됨.
         switch (getCurrentMode()) {
             case 0:
-                timeKeeping.setCurrentTime(this.currentTime);
+                timeKeeping.setSubTime(this.currentTime);
                 break;
             case 1:
 
@@ -514,7 +521,7 @@ public class Controller extends TimerTask {
     }
 
     public void reqChangeDate() {
-        turnipPrice.nextPrice(+1);
+        turnipPrice.nextPrice(1);
 //        return Integer.toString(value);
     }
 
