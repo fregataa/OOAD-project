@@ -12,6 +12,24 @@ public class Buzzer {
     AudioInputStream beep;
 
     public Buzzer() {
+        setBeep();
+    }
+
+    public void reqBeep() {
+        clip.start();
+        try {
+            sleep(5000);
+        } catch (Exception e){e.printStackTrace();};
+        clip.stop();
+        setBeep();
+    }
+
+    public void stopBeep() {
+        clip.stop();
+        setBeep();
+    }
+
+    public void setBeep() {
         try {
             this.beep = AudioSystem.getAudioInputStream(new File("beep.wav"));
             this.clip = AudioSystem.getClip();
@@ -22,15 +40,4 @@ public class Buzzer {
         }
     }
 
-    public void reqBeep() {
-        clip.start();
-        try {
-            sleep(5000);
-        } catch (Exception e){e.printStackTrace();};
-        clip.stop();
-    }
-
-    public void stopBeep() {
-        clip.stop();
-    }
 }

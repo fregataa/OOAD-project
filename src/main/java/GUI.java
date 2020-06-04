@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Timer;
 
 public class GUI extends JFrame implements ActionListener {
@@ -113,9 +114,11 @@ public class GUI extends JFrame implements ActionListener {
         private String segment2;
         private String[] segPath1;
         private String[] segPath2;
+        private int blinkIndex;
 
         public changeGUI() {
             setOpaque(false);
+            blinkIndex = 0;
         }
 
         public BufferedImage loadImage(String imagePath) {
@@ -140,7 +143,7 @@ public class GUI extends JFrame implements ActionListener {
             segPath2 = new String[9];
 
             /* AM/PM */
-            if(!controller.getIs24()) {
+            if(!controller.getIs24() && controller.getCurrentMode()!=3) {
                 int seg12H = Integer.parseInt(segment1);
                 if(seg12H > 120000) {
                     this.image = loadImage("data/base/PM.png");
@@ -159,6 +162,13 @@ public class GUI extends JFrame implements ActionListener {
                 g.drawImage(this.image, 115, 295, 20, 28, this);
             }
 
+            if(controller.getChanging() && blinkIndex < 1) {
+                controller.showNextBlink();
+                segment1 = controller.getSegment1();
+                segment2 = controller.getSegment2();
+                blinkIndex += 10;
+            }
+
             for (int i = 0; i < segment1.length(); i++) {
                 segPath1[i] = "data/mainseg/" + segment1.charAt(i) + ".png";
                 this.image = loadImage(segPath1[i]);
@@ -174,6 +184,8 @@ public class GUI extends JFrame implements ActionListener {
                 else g.drawImage(this.image, 158+(24*i), 385, 23, 35, this);
 
             }
+            blinkIndex--;
+
 
 
             /* ModeIndicator 활성화된 4개 모드와 현재 상태 */
@@ -197,14 +209,17 @@ public class GUI extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()==buttonA) {
-            pressButtonA();
-        }
-        if(e.getSource()==buttonB) {
-            pressButtonB();
-        }
+        if(e.getSource()==buttonA) pressButtonA();
+        if(e.getSource()==buttonB) pressButtonB();
         if(e.getSource()==buttonC) pressButtonC();
-        if(e.getSource()==buttonD) pressButtonD();
+        if(e.getSource()==buttonD) {
+            try {
+                pressButtonD();
+            } catch (ParseException parseException) {
+                parseException.printStackTrace();
+            }
+        }
+
         this.invalidate();
         this.repaint();
     }
@@ -227,10 +242,26 @@ public class GUI extends JFrame implements ActionListener {
                     controller.reqChangeTimeFormat();
                 break;
             case 1:
+                if(controller.getChanging())
+                    controller.nextUnit();
+                else
+                    controller.reqChangeIndicatedAlarm();
                 break;
             case 2:
                 break;
             case 3:
+                /*if(controller.getIsActivatedTimer()) {
+                    controller.reqPauseTimer();
+                }
+                else {
+                    if(controller.getChanging()) {
+                        controller.nextUnit();
+                    }
+                    else {
+                        controller.reqStartTimer();
+                    }
+
+                }*/
                 break;
             case 4:
                 controller.reqChangeWorldTime();
@@ -239,7 +270,7 @@ public class GUI extends JFrame implements ActionListener {
                 if(controller.getChanging())
                     controller.reqChangeDate();
                 break;
-                default: return;
+            default: return;
         }
 
 
@@ -267,6 +298,10 @@ public class GUI extends JFrame implements ActionListener {
                     controller.reqSetting();
                 break;
             case 1:
+                if(controller.getChanging())
+                    controller.changeUnitValue2(controller.getAlarmTime(),1);
+                else
+                    controller.reqSetting();
                 break;
             case 2:
                 break;
@@ -286,24 +321,33 @@ public class GUI extends JFrame implements ActionListener {
         }
     }
 
-    public void pressButtonD() {
+    public void pressButtonD() throws ParseException {
         System.out.println("press D");
 
         switch (controller.getCurrentMode()) {
             case 0:
-                if(controller.getChanging())
-                    controller.changeUnitValue(-1);
-                else
-                    controller.reqSetting();
-
+                if(controller.getChanging()) controller.changeUnitValue(-1);
                 break;
             case 1:
+                if(controller.getChanging())
+                    controller.changeUnitValue2(controller.getAlarmTime(),-1);
+                else {
+                    if (controller.isActivatedAlarm())
+                        controller.reqDeactivateAlarm();
+                    else
+                        controller.reqActivateAlarm();
+                }
                 break;
             case 2:
                 break;
-            case 3:
-                break;
+            case 3:/*
+                if(!controller.getIsActivatedTimer() && !controller.getChanging()) {
+                    controller.reqResetTimer();
+                }
+                else controller.changeUnitValue(-1);
+                break;*/
             case 4:
+
                 break;
             case 5:
                 if(controller.getChanging()){

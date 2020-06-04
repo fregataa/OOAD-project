@@ -1,3 +1,4 @@
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.LocalDateTime;
@@ -124,6 +125,7 @@ public class Controller extends TimerTask {
 
     Controller() {
         for(int i=0; i<4; i++){ alarm[i] = new Alarm(); }
+        alarmTime = alarm[currentPage].getAlarmValue();
         modeSwitch.initialize();
         setCurrentMode(0);
         is24 = true;
@@ -156,9 +158,14 @@ public class Controller extends TimerTask {
             case 1:
                 System.out.println("Alarm 모드");
                 //선택한 알람 시간 보여주는 부분
-                this.setSegment1(alarm[currentPage].getAlarmValue().format(DateTimeFormatter.ofPattern("HHmmss")));
-//                this.setSegment2("--0"+ currentPage +"--");
-//                this.setSegment2("--0"+ currentPage +"--");
+                String temp = "-----0"+Integer.toString(currentPage)+"--";
+                this.setSegment1(alarmTime.format(DateTimeFormatter.ofPattern("HHmmss")));
+
+                if(isActivatedAlarm())
+                    setSegment2("set"+temp.substring(3));
+                else
+                    setSegment2("---"+temp.substring(3));
+
                 break;
             case 2:
                 System.out.println("Stopwatch 모드");
@@ -332,6 +339,34 @@ public class Controller extends TimerTask {
         return ;
     }
 
+    public void changeUnitValue2(LocalTime itsTime, int increase) {
+
+        int value;
+        switch(currentCursor){
+            case 0:
+                value = itsTime.getHour();
+                value = increase + value;
+                if (value > maxValueOfCursor[currentCursor]) value = 0;
+                else if (value < 0 ) value = maxValueOfCursor[currentCursor];
+                alarmTime=itsTime.withHour(value);
+                break;
+            case 1:
+                value = itsTime.getMinute();
+                value = increase + value;
+                if (value > maxValueOfCursor[currentCursor]) value = 0;
+                else if (value < 0 ) value = maxValueOfCursor[currentCursor];
+                alarmTime=itsTime.withMinute(value);
+                break;
+        }
+
+        return ;
+    }
+
+    public LocalTime getAlarmTime() {
+        return alarmTime;
+    }
+
+
     public int changeValue(int button) {
         /*
         * 아래는 굳이 삭제하지 않았지만 zonedTime 관련 메소드를 찾아보시면
@@ -382,6 +417,11 @@ public class Controller extends TimerTask {
         //0으로 초기화한 변수를 up일때 1, down일때 -1로 설정하여 value값과 더함
         return result;
     }
+
+    public boolean isActivatedAlarm() {
+        return alarm[currentPage].getActivated();
+    }
+
 
     public void minimizeValue() {
         value = 0;
@@ -454,20 +494,22 @@ public class Controller extends TimerTask {
     public void reqLapTime() {
         stopwatch.lapTime();
     }
-
     //알람
     public void reqActivateAlarm() {
-        alarm[alarmPage].activateAlarm();
+        try {
+            alarm[currentPage].activateAlarm();
+        } catch (ParseException e) {}
     }
 
     public void reqDeactivateAlarm() {
-        alarm[alarmPage].deactivateAlarm();
-    }
 
+        alarm[currentPage].deactivateAlarm();
+    }
+    ///    format : "set--01--";
     public void reqChangeIndicatedAlarm() {
-        if (alarmPage != maxAlarmPage) alarmPage++;
-        else alarmPage = 0;
-        //return alarm[alarmPage].getAlarmValue();
+        if (currentPage != maxAlarmPage) currentPage++;
+        else currentPage = 0;
+        alarmTime = alarm[currentPage].getAlarmValue();
     }
 
     //세계시간
@@ -547,6 +589,16 @@ public class Controller extends TimerTask {
         return this.isChanging;
     }
 
+    public void showNextBlink() {
+        switch (currentCursor) {
+            case 0:
+                this.setSegment1(this.alarmTime.format(DateTimeFormatter.ofPattern("--mmss")));
+                break;
+            case 1:
+                this.setSegment1(this.alarmTime.format(DateTimeFormatter.ofPattern("HH--ss")));
+                break;
+        }
+    }
     //UI 확인용 Test Code
     public void testA() {
         segment1 = null;
