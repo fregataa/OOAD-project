@@ -13,7 +13,7 @@ class TimeKeeping {
     private long subTime;
 
     //singleTone Design
-    private TimeKeeping(){
+    public TimeKeeping(){
 
     }
     private static class LazyHolder {
