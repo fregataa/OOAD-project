@@ -1,4 +1,7 @@
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.TimeZone;
 
 public class WorldTime {
     /*서울		ICN	+9
@@ -12,40 +15,38 @@ public class WorldTime {
     멕시코시티	MEX	-6 */
     //시간이 아닌 UTC와의 차이를 저장해놓고, 인덱스를 기억해서 필요할때 계산해서 보여주는 구조
     //TimeKeeping의 시간을 인덱스의 값을 빼서 UTC 시간으로 만들어서 다시 시차 계산
-    public Integer location[] = {9, 0, 1, 4, 8, 10, -8, -5, -6};
-    public String locationName[] = {"ICN", "LHR", "AMS", "DXB", "HKG", "SYD", "LAX", "BOS", "MEX"};
-    public int maxCursor;
-    public int maxValueofCursor[];
-    public int maxPage;
+    private String location[] = {"-12","-11","-10","-09","-08","-07","-06","-05","-04","-03","-02","-01"
+            ,"+00","+01","+02","+03","+04","+05","+06","+07","+08","+09","+10","+11","+12"};
+
+    private String locationName[] = {"---","SST","HNL","ANC","LAX","LAX","YYC","ORD","JFK","GRU"
+            ,"---","---","UTC","CDG","JNB","SVO","DXB","MLE","OMS","BKK","HKG","ICN","SYD","---","AKL"};
+    public int currentPage;
     public ZonedDateTime worldTime;
-    //현재 표시중인 세계시간이 몇번째 시간인지에 대한 정보와 TimeKeeping이 몇번째 정보를 표시중인지에 대한 정보가 어딘가에는 있어야 한다.
-    //TimeKeeping의 int timezone
-    int timezone;
+//    private int currentZone;
+    private TimeKeeping timeKeeping = TimeKeeping.getInstance();
+    public WorldTime(){
+        //UTC+9 서울
+        this.currentPage = 21;
+    }
+    public ZonedDateTime getWorldTime(){
+        ZoneId id = ZoneId.of(location[this.currentPage]);
+        return timeKeeping.getCurrentTime().now(id);
+    }
+    public String getUTCString(){
+        return locationName[this.currentPage]+"UTC"+location[this.currentPage];
 
-    /*int nextWorldTime(int currentPage) {
-        ZonedDateTime currentDateTime;
-        //TimeKeeping을 currentDateTime에 가져왔다고 가정
-
-        ZonedDateTime worldTimeDate = currentDateTime.minusHours(location[timezone]);
-
-        if(currentPage != maxCursor)
-            worldTimeDate = currentDateTime.plusHours(location[currentPage++]);
-
-        else
-            worldTimeDate = currentDateTime.minusHours(location[0]);
-
-        return currentPage;
-    }*/
-
-
-    int nextWorldTime(int currentPage) {
-        //worldTime = setTimeZone(location[++currentPage]);
-
-        return currentPage;
     }
 
-    void changeTimeZone(int currentPage) {
-        int time_difference = location[currentPage] - location[timezone];
+
+    public void nextWorldTime() {
+
+        this.currentPage=(this.currentPage+1)%25;
+    }
+
+    void changeTimeZone() {
+        timeKeeping.setTimeZone(ZoneId.of(location[this.currentPage]));
+
+//        int time_difference = location[currentPage] - location[timezone];
         //currentDateTime = currentDateTime.plusHours(time_difference);
         //setCurrentTime(worldTime);
     }

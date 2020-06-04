@@ -23,7 +23,7 @@ public class Controller extends TimerTask {
     //private ZonedDateTime timeValue; 삭제
 
     /* GUI 확인 임의 설정 */
-    private int[] modeIndicator = new int[]{1,1,1,1,0,0};
+    private int[] modeIndicator = new int[]{1,1,1,0,1,0};
     //private int currentMode;
     private String segment1 = "000000";
     private String segment2 = "set--01--";
@@ -61,7 +61,7 @@ public class Controller extends TimerTask {
     private int currentIndicator;
     private int turnipPage;
 
-    private TimeKeeping timeKeeping = new TimeKeeping();
+    private TimeKeeping timeKeeping = TimeKeeping.getInstance();
     private Alarm[] alarm = new Alarm[4];
     private Stopwatch stopwatch = new Stopwatch();
     private Timer timer = new Timer();
@@ -127,6 +127,7 @@ public class Controller extends TimerTask {
         modeSwitch.initialize();
         setCurrentMode(0);
         is24 = true;
+
     }
 
     @Override
@@ -167,9 +168,17 @@ public class Controller extends TimerTask {
                 break;
             case 4:
                 System.out.println("WorldTime 모드");
+                currentTime=worldTime.getWorldTime();
+                this.setSegment1(currentTime.format(DateTimeFormatter.ofPattern("HHmmss")));
+                this.setSegment2(worldTime.getUTCString());
                 break;
             case 5:
                 System.out.println("Turnip Calculator 모드");
+                if(isChanging == false) {
+                    turnipValue=turnipPrice.getTurnipPrice();
+                }
+                this.setSegment1(String.format("%04d", turnipValue)+"  ");
+//                this.setSegment2(worldTime.getUTCString(turnipPrice.getTurnipDay()));
                 break;
             default:
                 break;
@@ -227,7 +236,7 @@ public class Controller extends TimerTask {
                 System.out.println("WorldTime 모드");
                 break;
             case 5:
-                turnipValue = turnipPrice.getTurnipPrice(turnipPage);
+                turnipValue = turnipPrice.getTurnipPrice();
             default:
                 break;
         }
@@ -405,6 +414,7 @@ public class Controller extends TimerTask {
 
                 break;
             case 5:
+                turnipPrice.savePrice(turnipValue);
                 break;
             default:
                 break;
@@ -462,28 +472,30 @@ public class Controller extends TimerTask {
 
     //세계시간
     public void reqChangeWorldTime() {
-        worldTime.nextWorldTime(currentPage);
+        worldTime.nextWorldTime();
     }
 
     public void reqChangeTimeZone() {
-        worldTime.changeTimeZone(currentPage);
+        worldTime.changeTimeZone();
     }
 
     //무
-    public int ChangePriceValue() {
+    public void ChangePriceValue(int value) {
         //value = changeValue();
-        if (value > maxTurnipValue) minimizeValue();
-        else if (value < 0) maximizeValue();
-        return value;
+        turnipValue += value;
+
+        if (turnipValue > maxTurnipValue) minimizeValue();
+        else if (turnipValue < 0) maximizeValue();
+
     }
 
     public void reqResetPrice() {
         turnipPrice.resetPrice();
     }
 
-    public String reqChangeDate() {
-        value = turnipPrice.nextPrice(currentPage);
-        return Integer.toString(value);
+    public void reqChangeDate() {
+        turnipPrice.nextPrice(+1);
+//        return Integer.toString(value);
     }
 
     //모드스위치
