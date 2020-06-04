@@ -187,8 +187,6 @@ public class GUI extends JFrame implements ActionListener {
             }
             blinkIndex--;
 
-
-
             /* ModeIndicator 활성화된 4개 모드와 현재 상태 */
             modeIndicator = controller.getModeIndicator();
 

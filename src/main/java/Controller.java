@@ -68,8 +68,8 @@ public class Controller extends TimerTask {
     private ModeSwitch modeSwitch = new ModeSwitch();
     private Buzzer buzzer = new Buzzer();
     private Timeout timeout = new Timeout();
-    public Timeout getTimeout(){ return this.timeout; }
 
+    public Timeout getTimeout(){ return this.timeout; }
 
     ///////////////////////////////////////////////////////
     public int getCurrentMode() {
@@ -139,13 +139,14 @@ public class Controller extends TimerTask {
 
     @Override
     public void run() {
+
+        GUI.getGUIInstance().invalidate();
+        GUI.getGUIInstance().repaint();
+
         if(timeout.getWaitTime().toSecondOfDay()>60){
             setCurrentMode(0);
             timeout.setWaitTime(LocalTime.of(0,0,0));
         }
-
-        GUI.getGUIInstance().invalidate();
-        GUI.getGUIInstance().repaint();
 
         switch (getCurrentMode()) {
             case 0:
@@ -171,6 +172,11 @@ public class Controller extends TimerTask {
 
                 break;
             case 2:
+                this.setSegment1(stopwatch.getStopwatchTime().format(DateTimeFormatter.ofPattern("HHmmss")));
+                if(stopwatch.getLapTime()==LocalTime.of(0,0,0))
+                    this.setSegment2("lap------");
+                else
+                    this.setSegment2("lap" + stopwatch.getLapTime().format(DateTimeFormatter.ofPattern("HHmmss")));
                 System.out.println("Stopwatch 모드");
                 break;
             case 3:
