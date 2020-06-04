@@ -30,6 +30,7 @@ public class Controller extends TimerTask {
     private String segment2 = "set--01--";
     private Boolean is24;  //isMorning->is24
     private Boolean isChanging = false;
+    private Boolean isActivatedTimer = false;
     /*---------------------*/
 
     private int currentCursor;
@@ -74,12 +75,6 @@ public class Controller extends TimerTask {
 
 
 
-    /*
-    * 아래 get메소드들은 대부분 UI에서 부르는 용도로 사용함.
-    * set메소드들은 controller나 이하 Object에서 set으로 설정하면 UI쪽에서 설정한 것을 UI가 get으로 처리함.
-    * UI쪽에서 변경되는 것은 현재 모드(currentMode), 전체모드(Modeindicator), 패널 1-2줄(segment1/2), AM/PM(is24)임.
-    * is24는 처리가 좀 다르니 GUI쪽 코드 참고하면 좋을 것 같음.
-    */
     ///////////////////////////////////////////////////////
     public int getCurrentMode() {
         return this.modeSwitch.getMode();
@@ -120,6 +115,14 @@ public class Controller extends TimerTask {
     public void setIs24(Boolean is24) {
         this.is24 = is24;
     }
+
+    public Boolean getChanging() {
+        return this.isChanging;
+    }
+
+    public Boolean getIsActivatedTimer() {
+        return this.isActivatedTimer;
+    }
     ///////////////////////////////////////////////////////
 
 
@@ -135,15 +138,10 @@ public class Controller extends TimerTask {
     @Override
     public void run() {
 
-//        if(isChanging){
-//            System.out.println("세팅");
-//            return;
-//        }
-        //mode Indicator, isMorning, segment 를 UI에 전달
-        //TimerTask 에 의해 GUI 쪽에서 계속 불림.
 
         GUI.getGUIInstance().invalidate();
         GUI.getGUIInstance().repaint();
+
         switch (getCurrentMode()) {
             case 0:
                 System.out.println("TimeKeeping 모드");
@@ -171,6 +169,19 @@ public class Controller extends TimerTask {
                 System.out.println("Stopwatch 모드");
                 break;
             case 3:
+                if(isActivatedTimer) {
+                    this.setSegment1(timer.getRunTime().format(DateTimeFormatter.ofPattern("HHmmss")));
+                    this.setSegment2("------run");
+                }
+                else if(!isActivatedTimer) {
+                    if(isChanging) {
+                        this.setSegment1(this.currentTime.format(DateTimeFormatter.ofPattern("HHmmss")));
+                        this.setSegment2("------set");
+                    } else {
+                        this.setSegment1(timer.getTimerTime());
+                        this.setSegment2("-----wait");
+                    }
+                }
                 System.out.println("Timer 모드");
                 break;
             case 4:
@@ -203,12 +214,31 @@ public class Controller extends TimerTask {
     }
 
 
-    //수정필요
-    //public void showNextBlink() { currentCursor++; }
-    //커서 깜빡 : 선택한 부분 나타났다 사라졌다 하는 식으로 해야 할텐데
+    public void showNextBlink() {
+        switch (currentCursor) {
+            case 0:
+                this.setSegment1(this.currentTime.format(DateTimeFormatter.ofPattern("--mmss")));
+                break;
+            case 1:
+                this.setSegment1(this.currentTime.format(DateTimeFormatter.ofPattern("HH--ss")));
+                break;
+            case 2:
+                this.setSegment1(this.currentTime.format(DateTimeFormatter.ofPattern("HHmm--")));
+                break;
+            case 3:
+                this.setSegment2(this.currentTime.format(DateTimeFormatter.ofPattern("eeeyyMM--", Locale.ENGLISH)));
+                break;
+            case 4:
+                this.setSegment2(this.currentTime.format(DateTimeFormatter.ofPattern("eeeyy--dd", Locale.ENGLISH)));
+                break;
+            case 5:
+                this.setSegment2(this.currentTime.format(DateTimeFormatter.ofPattern("eee--MMdd", Locale.ENGLISH)));
+                break;
+        }
+    }
+   
 
-    // 현재 커서 위치와 시간값을 어떻게 동시에 보내면 좋을지?
-    //=> 그냥 set 메소드만들어서 gui 쪽에서 부르면 됨.
+
     public int reqSetting() {
         currentCursor = 0;
         isChanging = true;
@@ -216,14 +246,7 @@ public class Controller extends TimerTask {
         switch (getCurrentMode()) {
             case 0:
                 this.currentTime = timeKeeping.getCurrentTime();
-//                year = currentTime.getYear();
-//                month = currentTime.getMonthValue();
-//                day = currentTime.getDayOfMonth();
-//                hour = currentTime.getHour();
-//                min = currentTime.getMinute();
-//                sec = currentTime.getSecond();
-                //아래와 같이 currentTime.format(DateTimeFormatter.ofPattern("HHmmss"))사용하면 됨.(String 전환)
-                this.setSegment1(this.currentTime.format(DateTimeFormatter.ofPattern("HHmmss")));
+                maxCursor = 5;
             break;
             case 1:
                 alarmTime = (alarm[currentPage].getAlarmValue());
@@ -232,13 +255,11 @@ public class Controller extends TimerTask {
                 sec = alarmTime.getSecond();
                 return currentCursor;
             case 3:
-                //불러오지 않아도 됨
-                //그냥 int형으로 만들어서 추가될때마다 ++해주면 됨
-                //그리고 그걸 string으로 timer나 다른 곳에 전달.
-                hour = timerTime.getHour();
-                min = timerTime.getMinute();
-                sec = timerTime.getSecond();
-                return currentCursor;
+                this.currentTime = timeKeeping.getCurrentTime();
+                this.currentTime = this.currentTime.withHour(0);
+                this.currentTime = this.currentTime.withMinute(0);
+                this.currentTime = this.currentTime.withSecond(0);
+                maxCursor = 2;
             case 4:
                 System.out.println("WorldTime 모드");
                 break;
@@ -277,21 +298,9 @@ public class Controller extends TimerTask {
     }
 
     public void changeUnitValue(int increase) {
-
-        /*
-          아래 주석 처리한 이유는 controller에서의 changevalue함수는
-          GUI 쪽에서 C/D 버튼에서 동시에 불려야하기 때문에 인자로 int button을 줄 수 밖에 없었음.
-          changeUpValue()/changeDownValue()를 따로 만들지 않는 한 changevalue함수는 리턴값을 활용하기 힘듦.
-        */
-        /*
-        int button과 value부분의 주석을 해제하고 수저했는데, GUI에서 입력된 버튼 정보를 받아서 그것을 Controller에 반영하는 방법에 대한 고민이었습니다.
-        */
-//        int button = GUI.getGUIInstance().getPressed();
-
-//        changeValue(button);
-        currentTime.getHour();
-//        if (value > maxValueOfCursor[currentCursor]) minimizeValue();
         int value;
+        currentTime.getHour();
+
         switch(currentCursor){
         case 0:
             value = currentTime.getHour();
@@ -317,7 +326,6 @@ public class Controller extends TimerTask {
         case 3:
             value = currentTime.getDayOfMonth();
             value = increase + value;
-//            System.out.println((currentTime.with(lastDayOfMonth())).getDayOfMonth());
             if (value > ((currentTime.with(lastDayOfMonth())).getDayOfMonth())) value = 1;
             else if (value < 1 ) value = (currentTime.with(lastDayOfMonth())).getDayOfMonth();
             currentTime=currentTime.withDayOfMonth(value);
@@ -334,8 +342,6 @@ public class Controller extends TimerTask {
             break;
 
         }
-        System.out.println(currentTime);
-//        else if (value < 0) maximizeValue();
         return ;
     }
 
@@ -447,8 +453,7 @@ public class Controller extends TimerTask {
 
                 break;
             case 3:
-
-
+                timer.setTimerTime(this.currentTime);
                 break;
             case 4:
 
@@ -467,15 +472,20 @@ public class Controller extends TimerTask {
 
     //타이머
     public void reqStartTimer() {
-        timer.startTimer(currentTime.toLocalTime());
+        isActivatedTimer = true;
+        timer.startTimer(timer.getRunTime());
+        return;
     }
 
     public void reqPauseTimer() {
+        isActivatedTimer = false;
         timer.pauseTimer();
+        return;
     }
 
     public void reqResetTimer() {
         timer.resetTimer();
+        return;
     }
 
     //스탑워치
@@ -583,35 +593,6 @@ public class Controller extends TimerTask {
     //버저
     public void reqStopBeep() {
         buzzer.stopBeep();
-    }
-
-    public Boolean getChanging() {
-        return this.isChanging;
-    }
-
-    public void showNextBlink() {
-        switch (currentCursor) {
-            case 0:
-                this.setSegment1(this.alarmTime.format(DateTimeFormatter.ofPattern("--mmss")));
-                break;
-            case 1:
-                this.setSegment1(this.alarmTime.format(DateTimeFormatter.ofPattern("HH--ss")));
-                break;
-        }
-    }
-    //UI 확인용 Test Code
-    public void testA() {
-        segment1 = null;
-        segment1 = "081023";
-        setSegment1(segment1);
-        return;
-    }
-
-    public void testB() {
-        modeIndicator[5] = 1;
-        modeIndicator[2] = 0;
-        setModeIndicator(modeIndicator);
-        return;
     }
 
 

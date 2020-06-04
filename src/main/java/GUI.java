@@ -104,7 +104,7 @@ public class GUI extends JFrame implements ActionListener {
         setVisible(true);
 
         Timer guiUpdate = new Timer();
-        guiUpdate.schedule(controller, 0, 500);
+        guiUpdate.schedule(controller, 0, 100);
     }
 
     public class changeGUI extends JPanel {
@@ -250,7 +250,7 @@ public class GUI extends JFrame implements ActionListener {
             case 2:
                 break;
             case 3:
-                /*if(controller.getIsActivatedTimer()) {
+                if(controller.getIsActivatedTimer()) {
                     controller.reqPauseTimer();
                 }
                 else {
@@ -261,7 +261,7 @@ public class GUI extends JFrame implements ActionListener {
                         controller.reqStartTimer();
                     }
 
-                }*/
+                }
                 break;
             case 4:
                 controller.reqChangeWorldTime();
@@ -306,6 +306,10 @@ public class GUI extends JFrame implements ActionListener {
             case 2:
                 break;
             case 3:
+                if(!controller.getIsActivatedTimer() && controller.getChanging())
+                    controller.changeUnitValue(1);
+                else
+                    controller.reqSetting();
                 break;
             case 4:
                 controller.reqChangeTimeZone();
@@ -340,12 +344,12 @@ public class GUI extends JFrame implements ActionListener {
                 break;
             case 2:
                 break;
-            case 3:/*
+            case 3:
                 if(!controller.getIsActivatedTimer() && !controller.getChanging()) {
                     controller.reqResetTimer();
                 }
                 else controller.changeUnitValue(-1);
-                break;*/
+                break;
             case 4:
 
                 break;
