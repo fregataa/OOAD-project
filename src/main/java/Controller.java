@@ -156,7 +156,7 @@ public class Controller extends TimerTask {
             case 1:
                 System.out.println("Alarm 모드");
                 //선택한 알람 시간 보여주는 부분
-                String temp = "-----0"+Integer.toString(currentPage)+"--";
+                String temp = "-----0"+Integer.toString(currentPage+1)+"--";
                 this.setSegment1(alarmTime.format(DateTimeFormatter.ofPattern("HHmmss")));
 
                 if(isActivatedAlarm())
@@ -196,7 +196,6 @@ public class Controller extends TimerTask {
                     turnipValue=turnipPrice.getTurnipPrice();
                 }
                 this.setSegment1(String.format("%04d", turnipValue)+"  ");
-//                this.setSegment2(worldTime.getUTCString(turnipPrice.getTurnipDay()));
                 break;
             default:
                 break;
@@ -247,19 +246,21 @@ public class Controller extends TimerTask {
             case 0:
                 this.currentTime = timeKeeping.getCurrentTime();
                 maxCursor = 5;
-            break;
+                break;
             case 1:
                 alarmTime = (alarm[currentPage].getAlarmValue());
-                hour = alarmTime.getHour();
-                min = alarmTime.getMinute();
-                sec = alarmTime.getSecond();
-                return currentCursor;
+                this.currentTime = this.currentTime.withHour(0);
+                this.currentTime = this.currentTime.withMinute(0);
+                this.currentTime = this.currentTime.withSecond(0);
+                maxCursor = 1;
+                break;
             case 3:
                 this.currentTime = timeKeeping.getCurrentTime();
                 this.currentTime = this.currentTime.withHour(0);
                 this.currentTime = this.currentTime.withMinute(0);
                 this.currentTime = this.currentTime.withSecond(0);
                 maxCursor = 2;
+                break;
             case 4:
                 System.out.println("WorldTime 모드");
                 break;
@@ -300,46 +301,45 @@ public class Controller extends TimerTask {
     public void changeUnitValue(int increase) {
         int value;
         currentTime.getHour();
-
         switch(currentCursor){
-        case 0:
-            value = currentTime.getHour();
-            value = increase + value;
-            if (value > maxValueOfCursor[currentCursor]) value = 0;
-            else if (value < 0 ) value = maxValueOfCursor[currentCursor];
-            currentTime=currentTime.withHour(value);
-            break;
-        case 1:
-            value = currentTime.getMinute();
-            value = increase + value;
-            if (value > maxValueOfCursor[currentCursor]) value = 0;
-            else if (value < 0 ) value = maxValueOfCursor[currentCursor];
-            currentTime=currentTime.withMinute(value);
-            break;
-        case 2:
-            value = currentTime.getSecond();
-            value = increase + value;
-            if (value > maxValueOfCursor[currentCursor]) value = 0;
-            else if (value < 0 ) value = maxValueOfCursor[currentCursor];
-            currentTime=currentTime.withSecond(value);
-            break;
-        case 3:
-            value = currentTime.getDayOfMonth();
-            value = increase + value;
-            if (value > ((currentTime.with(lastDayOfMonth())).getDayOfMonth())) value = 1;
-            else if (value < 1 ) value = (currentTime.with(lastDayOfMonth())).getDayOfMonth();
-            currentTime=currentTime.withDayOfMonth(value);
-            break;
-        case 4:
-            value = currentTime.getMonthValue();
-            value = increase + value;
-            if (value > maxValueOfCursor[currentCursor]) value = 1;
-            else if (value < 1 ) value = maxValueOfCursor[currentCursor];
-            currentTime=currentTime.withMonth(value);
-            break;
-        case 5:
-            currentTime=currentTime.plusYears(increase);
-            break;
+            case 0:
+                value = currentTime.getHour();
+                value = increase + value;
+                if (value > maxValueOfCursor[currentCursor]) value = 0;
+                else if (value < 0 ) value = maxValueOfCursor[currentCursor];
+                currentTime=currentTime.withHour(value);
+                break;
+            case 1:
+                value = currentTime.getMinute();
+                value = increase + value;
+                if (value > maxValueOfCursor[currentCursor]) value = 0;
+                else if (value < 0 ) value = maxValueOfCursor[currentCursor];
+                currentTime=currentTime.withMinute(value);
+                break;
+            case 2:
+                value = currentTime.getSecond();
+                value = increase + value;
+                if (value > maxValueOfCursor[currentCursor]) value = 0;
+                else if (value < 0 ) value = maxValueOfCursor[currentCursor];
+                currentTime=currentTime.withSecond(value);
+                break;
+            case 3:
+                value = currentTime.getDayOfMonth();
+                value = increase + value;
+                if (value > ((currentTime.with(lastDayOfMonth())).getDayOfMonth())) value = 1;
+                else if (value < 1 ) value = (currentTime.with(lastDayOfMonth())).getDayOfMonth();
+                currentTime=currentTime.withDayOfMonth(value);
+                break;
+            case 4:
+                value = currentTime.getMonthValue();
+                value = increase + value;
+                if (value > maxValueOfCursor[currentCursor]) value = 1;
+                else if (value < 1 ) value = maxValueOfCursor[currentCursor];
+                currentTime=currentTime.withMonth(value);
+                break;
+            case 5:
+                currentTime=currentTime.plusYears(increase);
+                break;
 
         }
         return ;

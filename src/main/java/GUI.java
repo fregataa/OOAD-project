@@ -248,6 +248,7 @@ public class GUI extends JFrame implements ActionListener {
                     controller.reqChangeIndicatedAlarm();
                 break;
             case 2:
+
                 break;
             case 3:
                 if(controller.getIsActivatedTimer()) {
