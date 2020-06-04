@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.time.LocalTime;
 import java.util.Timer;
 
 public class GUI extends JFrame implements ActionListener {
@@ -191,24 +192,47 @@ public class GUI extends JFrame implements ActionListener {
             /* ModeIndicator 활성화된 4개 모드와 현재 상태 */
             modeIndicator = controller.getModeIndicator();
 
-            for (int i = 0; i < modeIndicator.length; i++) {
-                if(controller.getCurrentMode() == i) g.setColor(Color.GREEN);
-                else {
-                    if (modeIndicator[i] == 1) g.setColor(Color.ORANGE);
-                    else g.setColor(Color.GRAY);
+            if(controller.getIsSelectingMode() == false){
+                for (int i = 0; i < modeIndicator.length; i++) {
+                    if(controller.getCurrentMode() == i) g.setColor(Color.GREEN);
+                    else {
+                        if (modeIndicator[i] == 1) g.setColor(Color.ORANGE);
+                        else g.setColor(Color.GRAY);
+                    }
+                    if (i < 3) g.fillRect((250 + 50 * i), 208, 10, 3);
+                    else g.fillRect((270 + 50 * (i - 3)), 253, 10, 3);
                 }
-                if (i < 3) g.fillRect((250 + 50 * i), 208, 10, 3);
-                else g.fillRect((270 + 50 * (i - 3)), 253, 10, 3);
             }
+            else{
+                for (int i = 0; i < modeIndicator.length; i++) {
+                    if(controller.getCurrentIndicator() == i) g.setColor(Color.GREEN);
+                    else {
+                        if (modeIndicator[i] == 1) g.setColor(Color.ORANGE);
+                        else g.setColor(Color.GRAY);
+                    }
+                    if (i < 3) g.fillRect((250 + 50 * i), 208, 10, 3);
+                    else g.fillRect((270 + 50 * (i - 3)), 253, 10, 3);
+                }
 
-
-
+            }
+            if(controller.getTimeout().getWaitTime().toSecondOfDay()>60){
+                for (int i = 0; i < modeIndicator.length; i++) {
+                    if(controller.getCurrentIndicator() == i) g.setColor(Color.GREEN);
+                    else {
+                        if (modeIndicator[i] == 1) g.setColor(Color.ORANGE);
+                        else g.setColor(Color.GRAY);
+                    }
+                    if (i < 3) g.fillRect((250 + 50 * i), 208, 10, 3);
+                    else g.fillRect((270 + 50 * (i - 3)), 253, 10, 3);
+                }
+            }
 
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        controller.getTimeout().setWaitTime(LocalTime.of(0,0,0));
         if(e.getSource()==buttonA) pressButtonA();
         if(e.getSource()==buttonB) pressButtonB();
         if(e.getSource()==buttonC) pressButtonC();
@@ -238,9 +262,10 @@ public class GUI extends JFrame implements ActionListener {
             case 0:
                 if(controller.getChanging())
                     controller.nextUnit();
-                else
+                else if(!controller.getChanging() && !controller.getIsSelectingMode())
                     controller.reqChangeTimeFormat();
-                break;
+                else if(controller.getIsSelectingMode())
+                    controller.reqNextIndicator();
             case 1:
                 if(controller.getChanging())
                     controller.nextUnit();
@@ -248,7 +273,8 @@ public class GUI extends JFrame implements ActionListener {
                     controller.reqChangeIndicatedAlarm();
                 break;
             case 2:
-
+                if(controller.getIsStartedStopwatch()==true) controller.reqPauseStopWatch();
+                else if(controller.getIsStartedStopwatch()==false) controller.reqStartStopWatch();
                 break;
             case 3:
                 if(controller.getIsActivatedTimer()) {
@@ -295,8 +321,13 @@ public class GUI extends JFrame implements ActionListener {
             case 0:
                 if(controller.getChanging())
                     controller.changeUnitValue(1);
-                else
+                else if(!controller.getChanging() && !controller.getIsSelectingMode())
                     controller.reqSetting();
+                else if(controller.getIsSelectingMode())
+                    if(controller.getModeIndicator()[controller.getCurrentIndicator()]==0)
+                        controller.reqSelectMode();
+                    else
+                        controller.reqUnselectMode();
                 break;
             case 1:
                 if(controller.getChanging())
@@ -305,6 +336,7 @@ public class GUI extends JFrame implements ActionListener {
                     controller.reqSetting();
                 break;
             case 2:
+                controller.reqLapTime();
                 break;
             case 3:
                 if(!controller.getIsActivatedTimer() && controller.getChanging())
@@ -332,6 +364,8 @@ public class GUI extends JFrame implements ActionListener {
         switch (controller.getCurrentMode()) {
             case 0:
                 if(controller.getChanging()) controller.changeUnitValue(-1);
+                else
+                    controller.reqSetIndicateMode();
                 break;
             case 1:
                 if(controller.getChanging())

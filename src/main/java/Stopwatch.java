@@ -1,33 +1,44 @@
 import java.time.LocalTime;
-import java.util.Timer;
 import java.util.TimerTask;
 
 public class Stopwatch extends TimerTask{
-    private LocalTime stopwatchTime = LocalTime.of(0,0,0);
-    private int maxCursor;
-    private int maxValueOfCursor[];
-    private int maxPage;
-    Timer m_timer = new Timer();
+    private LocalTime stopwatchTime;
+    private LocalTime lapTime;
+    private boolean isStartedStopwatch;
+    private java.util.Timer mTimer = new java.util.Timer();
 
+    public Stopwatch(){
+        this.stopwatchTime = LocalTime.of(0,0,0);
+        this.lapTime = LocalTime.of(0,0,0);
+    }
+
+    @Override
     public void run() {
-        this.stopwatchTime = this.stopwatchTime.plusSeconds(1);
-        System.out.println(this.stopwatchTime);
+        if(isStartedStopwatch){
+            this.stopwatchTime = this.stopwatchTime.plusSeconds(1);
+            System.out.println(this.stopwatchTime);
+        }
     }
 
     public void startStopwatch(){
-        this.stopwatchTime = LocalTime.of(0,0,0);
-        this.m_timer.schedule(this,0,1000);
+        isStartedStopwatch = true;
+        this.mTimer.schedule(this,0,1000);
     }
 
     public void pauseStopwatch(){
-        this.m_timer.cancel();
+        isStartedStopwatch = false;
     }
+
+    public boolean getIsStartedStopwatch(){return this.isStartedStopwatch;}
 
     public void resetStopwatch(){
         this.stopwatchTime = LocalTime.of(0,0,0);
+        this.lapTime = LocalTime.of(0,0,0);
     }
 
-    public LocalTime lapTime(){
-        return this.stopwatchTime;
-    }
+    public void lapTime(){ lapTime = stopwatchTime; }
+
+    public LocalTime getLapTime(){ return lapTime; }
+
+    public LocalTime getStopwatchTime() { return this.stopwatchTime; }
 }

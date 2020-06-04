@@ -53,15 +53,10 @@ public class Controller extends TimerTask {
     private LocalTime alarmTime;
     private static int maxTurnipValue = 600;
     private int turnipValue;
-    private int year;
-    private int month;
-    private int day;
-    private int hour;
-    private int min;
-    private int sec;
     private int selectedMode;
     private int currentIndicator;
     private int turnipPage;
+    private boolean isSelectingMode;
 
     private TimeKeeping timeKeeping = TimeKeeping.getInstance();
     private Alarm[] alarm = new Alarm[4];
@@ -72,7 +67,8 @@ public class Controller extends TimerTask {
     private TurnipPrice turnipPrice = new TurnipPrice();
     private ModeSwitch modeSwitch = new ModeSwitch();
     private Buzzer buzzer = new Buzzer();
-
+    private Timeout timeout = new Timeout();
+    public Timeout getTimeout(){ return this.timeout; }
 
 
     ///////////////////////////////////////////////////////
@@ -123,7 +119,13 @@ public class Controller extends TimerTask {
     public Boolean getIsActivatedTimer() {
         return this.isActivatedTimer;
     }
+
+    public boolean getIsSelectingMode(){ return this.isSelectingMode; }
+
+    public int getCurrentIndicator() { return this.currentIndicator;}
     ///////////////////////////////////////////////////////
+
+    public boolean getIsStartedStopwatch(){return stopwatch.getIsStartedStopwatch();}
 
 
     Controller() {
@@ -137,7 +139,10 @@ public class Controller extends TimerTask {
 
     @Override
     public void run() {
-
+        if(timeout.getWaitTime().toSecondOfDay()>60){
+            setCurrentMode(0);
+            timeout.setWaitTime(LocalTime.of(0,0,0));
+        }
 
         GUI.getGUIInstance().invalidate();
         GUI.getGUIInstance().repaint();
@@ -372,58 +377,6 @@ public class Controller extends TimerTask {
         return alarmTime;
     }
 
-
-    public int changeValue(int button) {
-        /*
-        * 아래는 굳이 삭제하지 않았지만 zonedTime 관련 메소드를 찾아보시면
-        * plusYear/ plusMonth 등 저장된 Time 에 대한 요소를 자동으로 더해주는 메소드가 있음.
-        * 따라서 int 형으로 선언하지 않아도 값 변경이 가능하며, 윤년과 월말에 대한 계산도 알아서 됨.
-        */
-        //value값에 반영하기 위해 return할 변수 선언
-        int result = 0;
-
-        //임의로 0을 up/ 1을 down 이라고
-        if (button == 0) {
-            result = 1;
-            switch (currentCursor) {
-                case 0:
-                    return ++hour;
-                case 1:
-                    return ++min;
-                case 2:
-                    return ++sec;
-                case 3:
-                    return ++day;
-                case 4:
-                    return ++month;
-                case 5:
-                    return ++year;
-                default:
-                    break;
-            }
-        } else if (button == 1) {
-            result = -1;
-            switch (currentCursor) {
-                case 0:
-                    return --hour;
-                case 1:
-                    return --min;
-                case 2:
-                    return --sec;
-                case 3:
-                    return --day;
-                case 4:
-                    return --month;
-                case 5:
-                    return --year;
-                default:
-                    break;
-            }
-        }
-        //0으로 초기화한 변수를 up일때 1, down일때 -1로 설정하여 value값과 더함
-        return result;
-    }
-
     public boolean isActivatedAlarm() {
         return alarm[currentPage].getActivated();
     }
@@ -504,6 +457,7 @@ public class Controller extends TimerTask {
     public void reqLapTime() {
         stopwatch.lapTime();
     }
+
     //알람
     public void reqActivateAlarm() {
         try {
@@ -555,10 +509,12 @@ public class Controller extends TimerTask {
         modeSwitch.nextMode();
     }
 
-    public int reqSetIndicateMode() {
+    public void reqSetIndicateMode() {
+        modeIndicator[0] = 1;
+        for(int i=1;i<6; i++) modeIndicator[i] = 0;
+        isSelectingMode = true;
         selectedMode = 0;
         currentIndicator = 1;
-        return currentIndicator;
     }
 
     public void reqSelectMode() {
@@ -570,22 +526,23 @@ public class Controller extends TimerTask {
             modeSwitch.saveMode(modeIndicator);
             //modeIndicator = modeSwitch.getEnabledMode();
             selectedMode = 0;
+            isSelectingMode = false;
         }
     }
 
-    public void reqUnselectMode(int currentCursor) {
-        modeIndicator[currentCursor] = 0;
+    public void reqUnselectMode() {
+        modeIndicator[currentIndicator] = 0;
         selectedMode--;
     }
 
     public void reqCancelSetIndicateMode() {
         /*timeKeeping모드로돌아간다.*/
-        //modeIndicator = modeSwitch.getEnabledMode();
+        modeIndicator = modeSwitch.getEnabledMode();
         setCurrentMode(0);
     }
 
     //추가한 메소드
-    public void nextIndicator() {
+    public void reqNextIndicator(){
         if(currentIndicator!=5) currentIndicator++;
         else currentIndicator = 1;
     }

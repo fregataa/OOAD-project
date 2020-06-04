@@ -1,18 +1,7 @@
 public class ModeSwitch {
 
-    private int[] enabledMode=new int[]{1, 1, 1, 1, 1, 1};
+    private int[] enabledMode=new int[]{1, 1, 1, 1, 0, 0};
     private int currentMode;
-    private int maxCursor;
-    private int maxValueOfCursor;
-    private int maxPage;
-
-
-
-    /////////////////////////////////////////////
-
-
-    /////////////////////////////////////////////
-
 
     ModeSwitch() {
         currentMode = 0;
@@ -29,20 +18,14 @@ public class ModeSwitch {
         }while(enabledMode[currentMode] == 0);
         return currentMode;
     }
-    public void switchMode(){
 
-    }
     public void saveMode(int[] enabledMode){
         this.enabledMode = enabledMode;
     }
-    public int timeOut(){
-        initialize();
-        return currentMode;
-    }
 
-    public int getMode() {
-        return this.currentMode;
-    }
+    public int getMode() { return this.currentMode; }
+
+    public int [] getEnabledMode(){ return this.enabledMode; }
 
     public void setMode(int mode) {
         this.currentMode = mode;
