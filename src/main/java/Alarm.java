@@ -54,14 +54,15 @@ public class Alarm{
                 //if(alarmTime.compareTo(now) == 0)
                 //aBuzzer.reqBeep();
 
-                if(alarmTime.getHour() == now.getHour() && alarmTime.getMinute() == now.getMinute()) {
+                if(alarmTime.getHour() == now.getHour() && alarmTime.getMinute() == now.getMinute() && 0==now.getSecond()) {
                     aBuzzer.reqBeep();
                 }
 
             }
         };
         //atimer.scheduleAtFixedRate(timerTask, targetTime, 86400000); //하루는 86400초, 절대적 간격으로 반복
-        atimer.scheduleAtFixedRate(timerTask, 0, 60000);
+        //1초마다 태스크 실행,
+        atimer.scheduleAtFixedRate(timerTask, 0, 1000);
     }
     public void deactivateAlarm(){
         this.isActivated = false;

@@ -148,6 +148,7 @@ public class Controller extends TimerTask {
             setCurrentMode(0);
             timeout.setWaitTime(LocalTime.of(0,0,0));
             this.reqCancelSetIndicateMode();
+            isChanging = false;
         }
 
         if(isSelectingMode){
