@@ -53,13 +53,15 @@ public class Timer extends TimerTask {
     @Override
     public void run() {
         if(isStartedTimer) {
-            if(count_sec>0) {
+            if(count_sec > 1) {
                 count_sec--;
                 runTime = runTime.minusSeconds(1);
                 System.out.println(count_sec);
             }
-            else if(count_sec==0){
+            else if(count_sec == 1){
+                runTime=runTime.minusSeconds(1);
                 buzzer.reqBeep();
+                this.pauseTimer();
             }
         }
     }
