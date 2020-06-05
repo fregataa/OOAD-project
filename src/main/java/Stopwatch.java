@@ -22,7 +22,8 @@ public class Stopwatch extends TimerTask{
 
     public void startStopwatch(){
         isStartedStopwatch = true;
-        this.mTimer.schedule(this,0,1000);
+        this.mTimer.scheduleAtFixedRate(this,0,1000);
+
     }
 
     public void pauseStopwatch(){

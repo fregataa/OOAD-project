@@ -170,7 +170,10 @@ public class Controller extends TimerTask {
                 System.out.println("Alarm 모드");
                 //선택한 알람 시간 보여주는 부분
                 String temp = "-----0"+Integer.toString(currentPage+1)+"--";
-                this.setSegment1(alarmTime.format(DateTimeFormatter.ofPattern("HHmmss")));
+                if(isChanging == false) {
+                    this.currentTime = ZonedDateTime.of(timeKeeping.getCurrentTime().toLocalDate(), alarm[currentPage].getAlarmValue(), timeKeeping.getCurrentTime().getZone());
+                }
+                this.setSegment1(currentTime.format(DateTimeFormatter.ofPattern("HHmmss")));
 
                 if(isActivatedAlarm())
                     setSegment2("set"+temp.substring(3));
@@ -273,10 +276,8 @@ public class Controller extends TimerTask {
                 maxCursor = 5;
                 break;
             case 1:
-                alarmTime = (alarm[currentPage].getAlarmValue());
-                this.currentTime = this.currentTime.withHour(0);
-                this.currentTime = this.currentTime.withMinute(0);
-                this.currentTime = this.currentTime.withSecond(0);
+                //this.currentTime = alarm[currentPage].getAlarmValue();
+                this.currentTime = ZonedDateTime.of(timeKeeping.getCurrentTime().toLocalDate(), alarm[currentPage].getAlarmValue(), timeKeeping.getCurrentTime().getZone());
                 maxCursor = 1;
                 break;
             case 3:
@@ -371,29 +372,6 @@ public class Controller extends TimerTask {
         return ;
     }
 
-    public void changeUnitValue2(LocalTime itsTime, int increase) {
-
-        int value;
-        switch(currentCursor){
-            case 0:
-                value = itsTime.getHour();
-                value = increase + value;
-                if (value > maxValueOfCursor[currentCursor]) value = 0;
-                else if (value < 0 ) value = maxValueOfCursor[currentCursor];
-                alarmTime=itsTime.withHour(value);
-                break;
-            case 1:
-                value = itsTime.getMinute();
-                value = increase + value;
-                if (value > maxValueOfCursor[currentCursor]) value = 0;
-                else if (value < 0 ) value = maxValueOfCursor[currentCursor];
-                alarmTime=itsTime.withMinute(value);
-                break;
-        }
-
-        return ;
-    }
-
     public LocalTime getAlarmTime() {
         return alarmTime;
     }
@@ -420,7 +398,7 @@ public class Controller extends TimerTask {
                 timeKeeping.setSubTime(this.currentTime);
                 break;
             case 1:
-
+                alarm[currentPage].saveAlarmTime(currentTime.toLocalTime());
 
                 break;
             case 2:
@@ -481,20 +459,19 @@ public class Controller extends TimerTask {
 
     //알람
     public void reqActivateAlarm() {
-        try {
             alarm[currentPage].activateAlarm();
-        } catch (ParseException e) {}
     }
 
     public void reqDeactivateAlarm() {
-
         alarm[currentPage].deactivateAlarm();
     }
     ///    format : "set--01--";
     public void reqChangeIndicatedAlarm() {
         if (currentPage != maxAlarmPage) currentPage++;
         else currentPage = 0;
-        alarmTime = alarm[currentPage].getAlarmValue();
+//        currentTime = alarm[currentPage].getAlarmValue();
+        this.currentTime = ZonedDateTime.of(timeKeeping.getCurrentTime().toLocalDate(), alarm[currentPage].getAlarmValue(), timeKeeping.getCurrentTime().getZone());
+
     }
 
     //세계시간

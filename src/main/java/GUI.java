@@ -319,7 +319,7 @@ public class GUI extends JFrame implements ActionListener {
                 break;
             case 1:
                 if(controller.getChanging())
-                    controller.changeUnitValue2(controller.getAlarmTime(),1);
+                    controller.changeUnitValue(1);
                 else
                     controller.reqSetting();
                 break;
@@ -357,7 +357,7 @@ public class GUI extends JFrame implements ActionListener {
                 break;
             case 1:
                 if(controller.getChanging())
-                    controller.changeUnitValue2(controller.getAlarmTime(),-1);
+                    controller.changeUnitValue(-1);
                 else {
                     if (controller.isActivatedAlarm())
                         controller.reqDeactivateAlarm();
