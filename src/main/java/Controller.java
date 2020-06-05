@@ -76,9 +76,9 @@ public class Controller extends TimerTask {
         return this.modeSwitch.getMode();
     }
 
-    public void setCurrentMode(int currentMode) {
-        this.modeSwitch.setMode(currentMode);
-    }
+//    public void setCurrentMode(int currentMode) {
+////        this.modeSwitch.setMode(currentMode);
+//    }
 
     public int[] getModeIndicator() {
         return this.modeIndicator;
@@ -132,7 +132,7 @@ public class Controller extends TimerTask {
         for(int i=0; i<4; i++){ alarm[i] = new Alarm(); }
         alarmTime = alarm[currentPage].getAlarmValue();
         modeSwitch.initialize();
-        setCurrentMode(0);
+
         is24 = true;
         modeIndicator=modeSwitch.getEnabledMode();
 
@@ -145,7 +145,8 @@ public class Controller extends TimerTask {
         GUI.getGUIInstance().repaint();
 
         if(timeout.getWaitTime().toSecondOfDay()>60){
-            setCurrentMode(0);
+            modeSwitch.initialize();
+
             timeout.setWaitTime(LocalTime.of(0,0,0));
             this.reqCancelSetIndicateMode();
             isChanging = false;
@@ -328,7 +329,6 @@ public class Controller extends TimerTask {
 
     public void changeUnitValue(int increase) {
         int value;
-        currentTime.getHour();
         switch(currentCursor){
             case 0:
                 value = currentTime.getHour();
@@ -538,7 +538,7 @@ public class Controller extends TimerTask {
         /*timeKeeping모드로돌아간다.*/
         //modeIndicator = modeSwitch.getEnabledMode();
         isSelectingMode = false;
-        setCurrentMode(0);
+        modeSwitch.initialize();
     }
 
     //추가한 메소드

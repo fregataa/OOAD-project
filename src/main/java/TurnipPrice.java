@@ -13,6 +13,7 @@ public class TurnipPrice {
     private Buzzer buzzer;
     private TimeKeeping timeKeeping = TimeKeeping.getInstance();
     private LocalDateTime alarmTime;
+    private LocalDateTime now;
     ///***controler부분
     private int tPrice;
     private int currentPage = 0;
@@ -20,6 +21,8 @@ public class TurnipPrice {
 
     public TurnipPrice() {
         turnipCalc = new TurnipCalc();
+        this.buzzer = new Buzzer();
+        this.timer = new Timer();
     }
 
     public int getTurnipPrice() {
@@ -92,7 +95,7 @@ public class TurnipPrice {
     private void setHighestDay(){
         int maxDay = 0;
         int maxPrice = 0;
-        for(int i = (timeKeeping.getCurrentTime().getDayOfWeek().getValue() - 1) * 2; i<13; i++){
+        for(int i = (timeKeeping.getCurrentTime().getDayOfWeek().getValue()%7 ) * 2; i<13; i++){
             if(price[i] > maxPrice){
                 maxDay = i;
                 maxPrice = price[i];
@@ -102,19 +105,19 @@ public class TurnipPrice {
             return;
         }
         int finalMaxDay = maxDay;
+
         timerTask = new TimerTask() {
-            LocalDateTime now;
             @Override
             public void run() {
                 now = timeKeeping.getCurrentTime().toLocalDateTime();
                 //if(alarmTime.compareTo(now) == 0)
                 //aBuzzer.reqBeep();
                 if (finalMaxDay % 2 == 0) {
-                    if (12 == now.getHour() && (finalMaxDay + 1) / 2 == (now.getDayOfWeek().getValue() - 1) && 0 == now.getMinute() && 0 == now.getSecond()) {
+                    if (12 == now.getHour() && (finalMaxDay + 1) / 2 == (now.getDayOfWeek().getValue()%7) && 0 == now.getMinute() && 0 == now.getSecond()) {
                         buzzer.reqBeep();
                     }
                 } else {
-                    if (9 == now.getHour() && (finalMaxDay + 1) / 2 == (now.getDayOfWeek().getValue() - 1)  && 0 == now.getMinute() && 0 == now.getSecond()) {
+                    if (9 == now.getHour() && (finalMaxDay + 1) / 2 == (now.getDayOfWeek().getValue()%7)  && 0 == now.getMinute() && 0 == now.getSecond()) {
                         buzzer.reqBeep();
                     }
                 }

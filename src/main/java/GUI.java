@@ -243,6 +243,7 @@ public class GUI extends JFrame implements ActionListener {
                     controller.reqChangeTimeFormat();
                 else if(controller.getIsSelectingMode())
                     controller.reqNextIndicator();
+                break;
             case 1:
                 if(controller.getChanging())
                     controller.nextUnit();
