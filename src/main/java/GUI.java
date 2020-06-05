@@ -221,13 +221,7 @@ public class GUI extends JFrame implements ActionListener {
         if(e.getSource()==buttonA) pressButtonA();
         if(e.getSource()==buttonB) pressButtonB();
         if(e.getSource()==buttonC) pressButtonC();
-        if(e.getSource()==buttonD) {
-            try {
-                pressButtonD();
-            } catch (ParseException parseException) {
-                parseException.printStackTrace();
-            }
-        }
+        if(e.getSource()==buttonD) pressButtonD();
 
         this.invalidate();
         this.repaint();
@@ -346,7 +340,7 @@ public class GUI extends JFrame implements ActionListener {
         }
     }
 
-    public void pressButtonD() throws ParseException {
+    public void pressButtonD() {
         System.out.println("press D");
 
         switch (controller.getCurrentMode()) {
@@ -386,11 +380,6 @@ public class GUI extends JFrame implements ActionListener {
                 break;
             default: return;
         }
-    }
-
-    //어느 버튼이 눌렸는지 Controller에 반환할 방법에 대한 고민?
-    public int getPressed() {
-        return this.pressed;
     }
 
     public static void main(String[] args) {
