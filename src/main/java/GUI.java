@@ -19,8 +19,6 @@ public class GUI extends JFrame implements ActionListener {
     private int frameHeight = 640;
     private Controller controller;
 
-    private int pressed;
-
     public GUI() {
         this.controller = new Controller();
 
