@@ -539,6 +539,7 @@ public class Controller extends TimerTask {
         //modeIndicator = modeSwitch.getEnabledMode();
         isSelectingMode = false;
         modeSwitch.initialize();
+        this.modeIndicator = modeSwitch.getEnabledMode();
     }
 
     //추가한 메소드

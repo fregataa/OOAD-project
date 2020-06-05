@@ -342,42 +342,46 @@ public class GUI extends JFrame implements ActionListener {
     public void pressButtonD() {
         System.out.println("press D");
 
-        switch (controller.getCurrentMode()) {
-            case 0:
-                if(controller.getChanging()) controller.changeUnitValue(-1);
-                else
-                    controller.reqSetIndicateMode();
-                break;
-            case 1:
-                if(controller.getChanging())
-                    controller.changeUnitValue(-1);
-                else {
-                    if (controller.isActivatedAlarm())
-                        controller.reqDeactivateAlarm();
+        if(controller.getIsSelectingMode())
+            controller.reqCancelSetIndicateMode();
+        else {
+            switch (controller.getCurrentMode()) {
+                case 0:
+                    if (controller.getChanging()) controller.changeUnitValue(-1);
                     else
-                        controller.reqActivateAlarm();
-                }
-                break;
-            case 2:
-                break;
-            case 3:
-                if(!controller.getIsActivatedTimer() && !controller.getChanging()) {
-                    controller.reqResetTimer();
-                }
-                else controller.changeUnitValue(-1);
-                break;
-            case 4:
+                        controller.reqSetIndicateMode();
+                    break;
+                case 1:
+                    if (controller.getChanging())
+                        controller.changeUnitValue(-1);
+                    else {
+                        if (controller.isActivatedAlarm())
+                            controller.reqDeactivateAlarm();
+                        else
+                            controller.reqActivateAlarm();
+                    }
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    if (!controller.getIsActivatedTimer() && !controller.getChanging()) {
+                        controller.reqResetTimer();
+                    } else controller.changeUnitValue(-1);
+                    break;
+                case 4:
 
-                break;
-            case 5:
-                if(controller.getChanging()){
+                    break;
+                case 5:
+                    if (controller.getChanging()) {
 
-                    controller.ChangePriceValue(-1);
-                }else{
-                    controller.reqResetPrice();
-                }
-                break;
-            default: return;
+                        controller.ChangePriceValue(-1);
+                    } else {
+                        controller.reqResetPrice();
+                    }
+                    break;
+                default:
+                    return;
+            }
         }
     }
 
