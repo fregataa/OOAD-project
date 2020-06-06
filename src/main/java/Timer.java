@@ -1,42 +1,39 @@
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalTime;
 import java.util.TimerTask;
 
 public class Timer extends TimerTask {
-    private ZonedDateTime timerTime;
-    private ZonedDateTime runTime;
+    private LocalTime timerTime;
+    private LocalTime runTime;
     private int count_sec;
     private boolean isStartedTimer;
-
-    private java.util.Timer timerThread = new java.util.Timer();
     private Buzzer buzzer = new Buzzer();
-    private TimeKeeping currentTime = new TimeKeeping();
 
-
-    Timer() {
-        timerThread.scheduleAtFixedRate(this, 0,1000);
-        timerTime = currentTime.getCurrentTime();
-        timerTime = timerTime.withHour(0);
-        timerTime = timerTime.withMinute(0);
-        timerTime = timerTime.withSecond(0);
-        runTime = timerTime;
+    public LocalTime getTimerTime() {
+        return timerTime;
     }
 
-    public String getTimerTime() {
-        return runTime.format(DateTimeFormatter.ofPattern("HHmmss"));
-    }
-
-    public void setTimerTime(ZonedDateTime time) {
+    public void setTimerTime(LocalTime time) {
         this.timerTime = time;
         runTime = timerTime;
-        count_sec = timerTime.toLocalTime().toSecondOfDay();
+        count_sec = timerTime.toSecondOfDay();
     }
 
-    public ZonedDateTime getRunTime() {
+    public LocalTime getRunTime() {
         return runTime;
     }
 
-    public void startTimer(ZonedDateTime runTime) {
+    public boolean getIsStartedTimer() {
+        return isStartedTimer;
+    }
+
+    Timer() {
+        java.util.Timer timerThread = new java.util.Timer();
+        timerThread.scheduleAtFixedRate(this, 0,1000);
+        timerTime = LocalTime.of(00,00,00);
+        runTime = timerTime;
+    }
+
+    public void startTimer(LocalTime runTime) {
         isStartedTimer = true;
         this.runTime = runTime;
     }
@@ -47,7 +44,7 @@ public class Timer extends TimerTask {
 
     public void resetTimer() {
         runTime = timerTime;
-        count_sec = timerTime.toLocalTime().toSecondOfDay();
+        count_sec = timerTime.toSecondOfDay();
     }
 
     @Override
@@ -56,12 +53,12 @@ public class Timer extends TimerTask {
             if(count_sec > 1) {
                 count_sec--;
                 runTime = runTime.minusSeconds(1);
-                System.out.println(count_sec);
             }
             else if(count_sec == 1){
                 runTime=runTime.minusSeconds(1);
                 buzzer.reqBeep();
-                this.pauseTimer();
+                isStartedTimer = false;
+                this.resetTimer();
             }
         }
     }

@@ -2,12 +2,12 @@ import java.time.LocalTime;
 import java.util.TimerTask;
 
 public class Timeout extends TimerTask {
-    private java.util.Timer gTimer = new java.util.Timer();
     private LocalTime waitTime;
 
     public Timeout(){
+        java.util.Timer timeoutThread = new java.util.Timer();
+        timeoutThread.schedule(this, 0, 1000);
         waitTime = LocalTime.of(0,0,0);
-        gTimer.schedule(this, 0, 1000);
     }
 
     public void setWaitTime(LocalTime time){ this.waitTime = time; }
@@ -16,5 +16,4 @@ public class Timeout extends TimerTask {
     public void run() {
         waitTime = waitTime.plusSeconds(1);
     }
-
 }

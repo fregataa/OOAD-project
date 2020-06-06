@@ -5,17 +5,25 @@ import java.io.*;
 
 import static java.lang.Thread.sleep;
 
-
 public class Buzzer {
-    private Boolean isActivated;
-    Clip clip;
-    AudioInputStream beep;
+    static boolean isBeeping;
+    static Clip clip;
+    static AudioInputStream beepSound;
 
-    public Buzzer() {
+    public boolean getIsBeeping() {
+        return isBeeping;
+    }
+
+    public void setIsBeeping(boolean isBeeping) {
+        this.isBeeping = isBeeping;
+    }
+
+    Buzzer() {
         setBeep();
     }
 
     public void reqBeep() {
+        isBeeping = true;
         clip.start();
         try {
             sleep(5000);
@@ -24,20 +32,21 @@ public class Buzzer {
         setBeep();
     }
 
+
     public void stopBeep() {
         clip.stop();
         setBeep();
     }
 
     public void setBeep() {
+        isBeeping = false;
         try {
-            this.beep = AudioSystem.getAudioInputStream(new File("beep.wav"));
+            this.beepSound = AudioSystem.getAudioInputStream(new File("beep.wav"));
             this.clip = AudioSystem.getClip();
-            this.clip.open(beep);
+            this.clip.open(beepSound);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 }

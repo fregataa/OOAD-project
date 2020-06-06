@@ -1,43 +1,36 @@
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalTime;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static java.lang.Thread.sleep;
 
 public class Alarm{
     private LocalTime alarmTime;
     private LocalTime now;
     private boolean isActivated;
-    private int maxCursor;
-    private int[] maxValueOfCursor = new int[]{};
-    private int maxPage;
-    private Timer atimer;
+    private Timer alarmThread;
     private Buzzer aBuzzer;
     private TimerTask timerTask;
     private TimeKeeping timeKeeping = TimeKeeping.getInstance();
 
-    private String source = "300101";
-
-    public Alarm() {
-        this.alarmTime = LocalTime.of(00,00,00);
-        this.isActivated = false;
-        this.aBuzzer = new Buzzer();
-        this.atimer = new Timer();
-    }
-
     public LocalTime getAlarmValue(){
         return this.alarmTime;
     }
+
+    public boolean getActivated() {
+        return this.isActivated;
+    }
+
+
+    Alarm() {
+        this.alarmTime = LocalTime.of(00,00,00);
+        this.isActivated = false;
+        this.aBuzzer = new Buzzer();
+        this.alarmThread = new Timer();
+    }
+
     public void saveAlarmTime(LocalTime newAlarm) {    //파라미터가 필요할 것 같다.
-        this.atimer.purge(); //기존 타이머는 지우고 타이머를 새로 생성
-        this.atimer = new Timer();
+        this.alarmThread.purge(); //기존 타이머는 지우고 타이머를 새로 생성
+        this.alarmThread = new Timer();
         this.alarmTime = newAlarm;
-//        this.source = nowDate;
         this.activateAlarm();
     }
 
@@ -57,27 +50,16 @@ public class Alarm{
                 if(alarmTime.getHour() == now.getHour() && alarmTime.getMinute() == now.getMinute() && 0==now.getSecond()) {
                     aBuzzer.reqBeep();
                 }
-
             }
         };
-        //atimer.scheduleAtFixedRate(timerTask, targetTime, 86400000); //하루는 86400초, 절대적 간격으로 반복
-        //1초마다 태스크 실행,
-        atimer.scheduleAtFixedRate(timerTask, 0, 1000);
+
+        alarmThread.scheduleAtFixedRate(timerTask, 0, 1000);
     }
+
     public void deactivateAlarm(){
         this.isActivated = false;
-
-        //Buzzer 등록된 타이머를 제거
-
         timerTask.cancel();
         aBuzzer.stopBeep();
-    }
-    public int nextAlarm(){ //하나의 알람 객체는 하나의 정보만 가지기 때문에 이건 Controller의 메소드로 구형해야 할 것 같다.
-        return 0;
-    }
-
-    public boolean getActivated() {
-        return this.isActivated;
     }
 
     //알람 설정 시 ParseException 추가!!

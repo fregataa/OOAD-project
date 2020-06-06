@@ -6,20 +6,17 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
 import java.time.LocalTime;
 import java.util.Timer;
 
 public class GUI extends JFrame implements ActionListener {
     private static GUI guiInstance;
     private JButton buttonA, buttonB, buttonC, buttonD;
-    private JLabel panel;
-    private JLayeredPane pane;
-    private int frameWidth = 510;
-    private int frameHeight = 640;
     private Controller controller;
 
     public GUI() {
+        int frameWidth = 510;
+        int frameHeight = 640;
         this.controller = new Controller();
 
         setTitle("DWS T2");
@@ -29,7 +26,7 @@ public class GUI extends JFrame implements ActionListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
 
-        pane = new JLayeredPane();
+        JLayeredPane pane = new JLayeredPane();
         pane.setBounds(0, 0, frameWidth, frameHeight);
 
         /*----- Layer0 <버튼> ------*/
@@ -68,7 +65,7 @@ public class GUI extends JFrame implements ActionListener {
         layer0.add(buttonD);
 
         /*----- <시계 panel> ------*/
-        panel = new JLabel(new ImageIcon("data/base/back.png"));
+        JLabel panel = new JLabel(new ImageIcon("data/base/back.png"));
         panel.setBounds(25, 75, 450, 450);
 
 
@@ -103,7 +100,7 @@ public class GUI extends JFrame implements ActionListener {
         setVisible(true);
 
         Timer guiUpdate = new Timer();
-        guiUpdate.schedule(controller, 0, 100);
+        guiUpdate.scheduleAtFixedRate(controller, 0, 10);
     }
 
     public class changeGUI extends JPanel {
@@ -113,11 +110,9 @@ public class GUI extends JFrame implements ActionListener {
         private String segment2;
         private String[] segPath1;
         private String[] segPath2;
-        private int blinkIndex;
 
         public changeGUI() {
             setOpaque(false);
-            blinkIndex = 0;
         }
 
         public BufferedImage loadImage(String imagePath) {
@@ -143,33 +138,31 @@ public class GUI extends JFrame implements ActionListener {
 
             /* AM/PM */
             if(!controller.getIs24() && controller.getCurrentMode()!=3) {
-                int seg12H = Integer.parseInt(segment1);
-                if(seg12H > 120000) {
+                int seg12H = Integer.parseInt(segment1.substring(0,2));
+                if(seg12H > 12) {
                     this.image = loadImage("data/base/PM.png");
                     //12엔 0 아닌 12로 표시, 1시엔 1로 표시
-                    if(seg12H > 130000){
-                        segment1 = Integer.toString(seg12H%120000);
-                        if(seg12H < 220000){
-                            segment1 = "0"+segment1;
+                    if(seg12H > 13){
+                        segment1 = seg12H%12 + segment1.substring(2,6);
+                        if(seg12H < 22){
+                            segment1 = "0" + segment1;
                         }
                     }
                 }
                 else {
                     this.image = loadImage("data/base/AM.png");
-
                 }
                 g.drawImage(this.image, 115, 295, 20, 28, this);
             }
 
-            if(controller.getChanging() && blinkIndex < 1) {
-                controller.showNextBlink();
-                segment1 = controller.getSegment1();
-                segment2 = controller.getSegment2();
-                blinkIndex += 10;
-            }
 
             for (int i = 0; i < segment1.length(); i++) {
-                segPath1[i] = "data/mainseg/" + segment1.charAt(i) + ".png";
+                if(controller.getChanging() && i/2 == controller.getCurrentCursor()) {
+                    segPath1[i] = "data/mainseg/change/" + segment1.charAt(i) + ".png";
+                } else {
+                    segPath1[i] = "data/mainseg/" + segment1.charAt(i) + ".png";
+                }
+                if (controller.getCurrentMode()==5 && controller.getChanging()) segPath1[i] = "data/mainseg/change/" + segment1.charAt(i) + ".png";
                 this.image = loadImage(segPath1[i]);
                 if(i<2) g.drawImage(this.image, 135+(43*i), 295, 45, 67, this);
                 else if(i>=2 && i<4) g.drawImage(this.image, 142+(43*i), 295, 45, 67, this);
@@ -177,13 +170,16 @@ public class GUI extends JFrame implements ActionListener {
             }
 
             for (int i = 0; i < segment2.length(); i++) {
-                segPath2[i] = "data/subseg/" + segment2.charAt(i) + ".png";
+                if(controller.getChanging() && (i+1)/2 == 7-controller.getCurrentCursor())  {
+                    segPath2[i] = "data/subseg/change/" + segment2.charAt(i) + ".png";
+                } else {
+                    segPath2[i] = "data/subseg/" + segment2.charAt(i) + ".png";
+                }
                 this.image = loadImage(segPath2[i]);
                 if(i<3) g.drawImage(this.image, 138+(24*i), 385, 23, 35, this);
                 else g.drawImage(this.image, 158+(24*i), 385, 23, 35, this);
 
             }
-            blinkIndex--;
 
             /* ModeIndicator 활성화된 4개 모드와 현재 상태 */
             modeIndicator = controller.getModeIndicator();
@@ -216,6 +212,7 @@ public class GUI extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         controller.getTimeout().setWaitTime(LocalTime.of(0,0,0));
+
         if(e.getSource()==buttonA) pressButtonA();
         if(e.getSource()==buttonB) pressButtonB();
         if(e.getSource()==buttonC) pressButtonC();
@@ -231,156 +228,114 @@ public class GUI extends JFrame implements ActionListener {
     }
 
     public void pressButtonA() {
-        //controller.getCurrentMode();
-        //controller.testA();
-        System.out.println("press A");
-
-        switch (controller.getCurrentMode()) {
-            case 0:
-                if(controller.getChanging())
-                    controller.nextUnit();
-                else if(!controller.getChanging() && !controller.getIsSelectingMode())
-                    controller.reqChangeTimeFormat();
-                else if(controller.getIsSelectingMode())
-                    controller.reqNextIndicator();
-                break;
-            case 1:
-                if(controller.getChanging())
-                    controller.nextUnit();
-                else
-                    controller.reqChangeIndicatedAlarm();
-                break;
-            case 2:
-                if(controller.getIsStartedStopwatch()==true) controller.reqPauseStopWatch();
-                else if(controller.getIsStartedStopwatch()==false) controller.reqStartStopWatch();
-                break;
-            case 3:
-                if(controller.getIsActivatedTimer()) {
-                    controller.reqPauseTimer();
-                }
-                else {
-                    if(controller.getChanging()) {
-                        controller.nextUnit();
-                    }
-                    else {
-                        controller.reqStartTimer();
-                    }
-
-                }
-                break;
-            case 4:
-                controller.reqChangeWorldTime();
-                break;
-            case 5:
-                if(controller.getChanging()){
-
-                }
-                else
-                    controller.reqChangeDate();
-                break;
-            default: return;
+        if(controller.getIsBeeping()) controller.reqStopBeep();
+        else {
+            switch (controller.getCurrentMode()) {
+                case 0:
+                    if(controller.getChanging()) controller.nextUnit();
+                    else if(!controller.getChanging() && !controller.getIsSelectingMode()) controller.reqChangeTimeFormat();
+                    else if(controller.getIsSelectingMode()) controller.reqNextIndicator();
+                    break;
+                case 1:
+                    if(controller.getChanging()) controller.nextUnit();
+                    else controller.reqChangeIndicatedAlarm();
+                    break;
+                case 2:
+                    if(controller.getIsStartedStopwatch()) controller.reqPauseStopWatch();
+                    else if(!controller.getIsStartedStopwatch()) controller.reqStartStopWatch();
+                    break;
+                case 3:
+                    if(controller.getIsActivatedTimer()) controller.reqPauseTimer();
+                    else if(!controller.getIsActivatedTimer() && !controller.getChanging()) controller.reqStartTimer();
+                    else if(!controller.getIsActivatedTimer() && controller.getChanging()) controller.nextUnit();
+                    break;
+                case 4:
+                    controller.reqChangeWorldTime();
+                    break;
+                case 5:
+                    if(!controller.getChanging()) controller.reqChangeDate();
+                    break;
+                default: break;
+            }
         }
-
-
     }
+
 
     public void pressButtonB() {
-        //controller.testB();
-        //무언가 설정 중엔 설정 완료로 동작. 설정중이 아닐 땐 모드 변경으로 동작하게.
-        System.out.println("press B");
-
-        if(controller.getChanging())
-            controller.reqCompleteSetting();
-        else
-            controller.reqModeSwitch();
+        if(controller.getIsBeeping()) controller.reqStopBeep();
+        else {
+            if(controller.getChanging()) controller.reqCompleteSetting();
+            else if(!controller.getIsSelectingMode()) controller.reqModeSwitch();
+        }
     }
 
-    public void pressButtonC() {
-        System.out.println("press C");
 
-        switch (controller.getCurrentMode()) {
-            case 0:
-                if(controller.getChanging())
-                    controller.changeUnitValue(1);
-                else if(!controller.getChanging() && !controller.getIsSelectingMode())
-                    controller.reqSetting();
-                else if(controller.getIsSelectingMode())
-                    if(controller.getModeIndicator()[controller.getCurrentIndicator()]==0)
-                        controller.reqSelectMode();
-                    else
-                        controller.reqUnselectMode();
-                break;
-            case 1:
-                if(controller.getChanging())
-                    controller.changeUnitValue(1);
-                else
-                    controller.reqSetting();
-                break;
-            case 2:
-                controller.reqLapTime();
-                break;
-            case 3:
-                if(!controller.getIsActivatedTimer() && controller.getChanging())
-                    controller.changeUnitValue(1);
-                else
-                    controller.reqSetting();
-                break;
-            case 4:
-                controller.reqChangeTimeZone();
-                break;
-            case 5:
-                if(controller.getChanging()){
-                    controller.ChangePriceValue(1);
-                }else{
-                    controller.reqSetting();
-                }
-                break;
-            default: return;
+    public void pressButtonC() {
+        if(controller.getIsBeeping()) controller.reqStopBeep();
+        else {
+            switch (controller.getCurrentMode()) {
+                case 0:
+                    if(controller.getChanging()) controller.changeUnitValue(1);
+                    else if(!controller.getChanging() && !controller.getIsSelectingMode()) controller.reqSetting();
+                    else if(controller.getIsSelectingMode()) {
+                        if(controller.getModeIndicator()[controller.getCurrentIndicator()]==0) controller.reqSelectMode();
+                        else controller.reqUnselectMode();
+                    }
+                    break;
+                case 1:
+                    if(controller.getChanging()) controller.changeUnitValue(1);
+                    else controller.reqSetting();
+                    break;
+                case 2:
+                    controller.reqLapTime();
+                    break;
+                case 3:
+                    if(!controller.getIsActivatedTimer() && controller.getChanging()) controller.changeUnitValue(1);
+                    else if(!controller.getIsActivatedTimer()) controller.reqSetting();
+                    break;
+                case 4:
+                    controller.reqChangeTimeZone();
+                    break;
+                case 5:
+                    if(controller.getChanging()) controller.ChangePriceValue(1);
+                    else controller.reqSetting();
+                    break;
+                default: break;
+            }
         }
     }
 
     public void pressButtonD() {
-        System.out.println("press D");
-
-        if(controller.getIsSelectingMode())
-            controller.reqCancelSetIndicateMode();
-        else {
+        if(controller.getIsBeeping()) controller.reqStopBeep(); {
             switch (controller.getCurrentMode()) {
                 case 0:
                     if (controller.getChanging()) controller.changeUnitValue(-1);
-                    else
-                        controller.reqSetIndicateMode();
+                    else {
+                        if (controller.getIsSelectingMode()) controller.reqCancelSetIndicateMode();
+                        else controller.reqSetIndicateMode();
+                    }
                     break;
                 case 1:
-                    if (controller.getChanging())
-                        controller.changeUnitValue(-1);
+                    if (controller.getChanging()) controller.changeUnitValue(-1);
                     else {
-                        if (controller.isActivatedAlarm())
-                            controller.reqDeactivateAlarm();
-                        else
-                            controller.reqActivateAlarm();
+                        if (controller.isActivatedAlarm()) controller.reqDeactivateAlarm();
+                        else controller.reqActivateAlarm();
                     }
                     break;
                 case 2:
+                    controller.reqResetStopWatch();
                     break;
                 case 3:
-                    if (!controller.getIsActivatedTimer() && !controller.getChanging()) {
-                        controller.reqResetTimer();
-                    } else controller.changeUnitValue(-1);
+                    if (!controller.getIsActivatedTimer() && !controller.getChanging()) controller.reqResetTimer();
+                    else controller.changeUnitValue(-1);
                     break;
                 case 4:
-
                     break;
                 case 5:
-                    if (controller.getChanging()) {
-
-                        controller.ChangePriceValue(-1);
-                    } else {
-                        controller.reqResetPrice();
-                    }
+                    if (controller.getChanging()) controller.ChangePriceValue(-1);
+                    else controller.reqResetPrice();
                     break;
-                default:
-                    return;
+                default: break;
             }
         }
     }
@@ -389,4 +344,3 @@ public class GUI extends JFrame implements ActionListener {
         GUI.getGUIInstance();
     }
 }
-
