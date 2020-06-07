@@ -26,6 +26,18 @@ public class TurnipPrice {
         return price[currentPage];
     }
 
+    public void setTurnipPrice(int priceValue){ //무 값을 저장하고 인덱스 1 증가
+        price[currentPage] = priceValue;
+        isInputted[currentPage] = true;
+        inputtedPrice++;
+
+        if(inputtedPrice>=5) {
+            System.out.println(Arrays.toString(turnipCalc.calcPrice(price, isInputted)));
+            price = turnipCalc.calcPrice(price,isInputted); //여기에서 calcPrice호출
+            setHighestDay();
+        }
+    }
+
     public String getTurnipDay() {
         String dayOfWeek[] = new String[]{"sun", "mon", "tue", "wed", "thu", "fri", "sat"};
         String timeOfDay[] = new String[]{"am-", "pm-"};
@@ -38,18 +50,6 @@ public class TurnipPrice {
             return whatDayOfWeek + "-in";
         }else{
             return whatDayOfWeek + "est";
-        }
-    }
-
-    public void savePrice(int priceValue){ //무 값을 저장하고 인덱스 1 증가
-        price[currentPage] = priceValue;
-        isInputted[currentPage] = true;
-        inputtedPrice++;
-
-        if(inputtedPrice>=5) {
-            System.out.println(Arrays.toString(turnipCalc.calcPrice(price, isInputted)));
-            price = turnipCalc.calcPrice(price,isInputted); //여기에서 calcPrice호출
-            setHighestDay();
         }
     }
 

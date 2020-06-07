@@ -4,6 +4,10 @@ public class ModeSwitch {
 
     public int getMode() { return this.currentMode; }
 
+    public void setMode(int[] enabledMode) {
+        this.enabledMode = enabledMode;
+    }
+
     public int[] getEnabledMode() { return this.enabledMode; }
 
     ModeSwitch() {
@@ -20,8 +24,5 @@ public class ModeSwitch {
         } while(enabledMode[currentMode] == 0);
     }
 
-    public void saveMode(int[] enabledMode) {
-        this.enabledMode = enabledMode;
-    }
 }
 

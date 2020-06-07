@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -83,6 +85,8 @@ public class Controller extends TimerTask {
         return this.isActivatedTimer;
     }
 
+    public boolean getIsActivatedAlarm() { return alarm[currentPage].getActivated(); }
+
     public boolean getIsSelectingMode(){
         return this.isSelectingMode;
     }
@@ -138,9 +142,9 @@ public class Controller extends TimerTask {
                 break;
             case 1:
                 String temp = "-----0"+(currentPage+1)+"--";
-                if(!isChanging) this.currentTime = ZonedDateTime.of(timeKeeping.getCurrentTime().toLocalDate(), alarm[currentPage].getAlarmValue(), timeKeeping.getCurrentTime().getZone());
+                if(!isChanging) this.currentTime = ZonedDateTime.of(timeKeeping.getCurrentTime().toLocalDate(), alarm[currentPage].getAlarmTime(), timeKeeping.getCurrentTime().getZone());
                 this.setSegment1(currentTime.format(DateTimeFormatter.ofPattern("HHmmss")));
-                if(isActivatedAlarm()) setSegment2("set"+temp.substring(3));
+                if(getIsActivatedAlarm()) setSegment2("set"+temp.substring(3));
                 else setSegment2("---"+temp.substring(3));
                 break;
             case 2:
@@ -182,15 +186,12 @@ public class Controller extends TimerTask {
     }
 
     public void reqChangeTimeFormat() {
-        timeFormatCalc();
-    }
-
-    public void timeFormatCalc() {
         is24 = !is24;
     }
 
-
     public void reqSetting() {
+        LocalDate nowLocalDate = timeKeeping.getCurrentTime().toLocalDate();
+        ZoneId nowZoneId = timeKeeping.getCurrentTime().getZone();
         currentCursor = 0;
         isChanging = true;
 
@@ -200,11 +201,11 @@ public class Controller extends TimerTask {
                 maxCursor = 5;
                 break;
             case 1:
-                this.currentTime = ZonedDateTime.of(timeKeeping.getCurrentTime().toLocalDate(), alarm[currentPage].getAlarmValue(), timeKeeping.getCurrentTime().getZone());
+                this.currentTime = ZonedDateTime.of(nowLocalDate, alarm[currentPage].getAlarmTime(), nowZoneId);
                 maxCursor = 1;
                 break;
             case 3:
-                this.currentTime = ZonedDateTime.of(timeKeeping.getCurrentTime().toLocalDate(), timer.getTimerTime(), timeKeeping.getCurrentTime().getZone());
+                this.currentTime = ZonedDateTime.of(nowLocalDate, timer.getTimerTime(), nowZoneId);
                 maxCursor = 2;
                 break;
             case 5:
@@ -230,47 +231,47 @@ public class Controller extends TimerTask {
     }
 
 
-    public void changeUnitValue(int increase) {
+    public void changeUnitValue(int changeValue) {
         int value;
         switch(currentCursor){
             case 0:
                 value = currentTime.getHour();
-                value = increase + value;
+                value = changeValue + value;
                 if (value > maxValueOfCursor[currentCursor]) value = 0;
                 else if (value < 0 ) value = maxValueOfCursor[currentCursor];
                 currentTime=currentTime.withHour(value);
                 break;
             case 1:
                 value = currentTime.getMinute();
-                value = increase + value;
+                value = changeValue + value;
                 if (value > maxValueOfCursor[currentCursor]) value = 0;
                 else if (value < 0 ) value = maxValueOfCursor[currentCursor];
                 currentTime=currentTime.withMinute(value);
                 break;
             case 2:
                 value = currentTime.getSecond();
-                value = increase + value;
+                value = changeValue + value;
                 if (value > maxValueOfCursor[currentCursor]) value = 0;
                 else if (value < 0 ) value = maxValueOfCursor[currentCursor];
                 currentTime=currentTime.withSecond(value);
                 break;
             case 3:
                 value = currentTime.getDayOfMonth();
-                value = increase + value;
+                value = changeValue + value;
                 if (value > ((currentTime.with(lastDayOfMonth())).getDayOfMonth())) value = 1;
                 else if (value < 1 ) value = (currentTime.with(lastDayOfMonth())).getDayOfMonth();
                 currentTime=currentTime.withDayOfMonth(value);
                 break;
             case 4:
                 value = currentTime.getMonthValue();
-                value = increase + value;
+                value = changeValue + value;
                 if (value > maxValueOfCursor[currentCursor]) value = 1;
                 else if (value < 1 ) value = maxValueOfCursor[currentCursor];
                 currentTime=currentTime.withMonth(value);
                 break;
             case 5:
                 value = currentTime.getYear();
-                value = increase + value;
+                value = changeValue + value;
                 if (value > maxValueOfCursor[currentCursor]) value = 1990;
                 else if (value < 1990 ) value = maxValueOfCursor[currentCursor];
                 currentTime=currentTime.withYear(value);
@@ -279,24 +280,20 @@ public class Controller extends TimerTask {
         }
     }
 
-    public boolean isActivatedAlarm() {
-        return alarm[currentPage].getActivated();
-    }
-
     public void reqCompleteSetting() {
         isChanging = false;
         switch (getCurrentMode()) {
             case 0:
-                timeKeeping.setSubTime(this.currentTime);
+                timeKeeping.setTime(this.currentTime);
                 break;
             case 1:
-                alarm[currentPage].saveAlarmTime(currentTime.toLocalTime());
+                alarm[currentPage].setAlarmTime(currentTime.toLocalTime());
                 break;
             case 3:
                 timer.setTimerTime(this.currentTime.toLocalTime());
                 break;
             case 5:
-                turnipPrice.savePrice(turnipValue);
+                turnipPrice.setTurnipPrice(turnipValue);
                 break;
             default: break;
         }
@@ -344,7 +341,7 @@ public class Controller extends TimerTask {
 
     public void reqChangeIndicatedAlarm() {
         currentPage = (currentPage+1)%4;
-        this.currentTime = ZonedDateTime.of(timeKeeping.getCurrentTime().toLocalDate(), alarm[currentPage].getAlarmValue(), timeKeeping.getCurrentTime().getZone());
+        this.currentTime = ZonedDateTime.of(timeKeeping.getCurrentTime().toLocalDate(), alarm[currentPage].getAlarmTime(), timeKeeping.getCurrentTime().getZone());
     }
 
     public void reqChangeWorldTime() {
@@ -355,11 +352,11 @@ public class Controller extends TimerTask {
         worldTime.changeTimeZone();
     }
 
-    public void ChangePriceValue(int value) {
+    public void reqChangePriceValue() {
         int maxTurnipValue = 600;
         int minTurnipValue = 0;
 
-        turnipValue += value;
+        turnipValue += 1;
         if (turnipValue > maxTurnipValue) turnipValue = minTurnipValue;
         else if (turnipValue < minTurnipValue) turnipValue = maxTurnipValue;
     }
@@ -396,7 +393,7 @@ public class Controller extends TimerTask {
             this.setModeIndicator(changeModeIndicator);
         } else if (selectedMode == 2) {
             changeModeIndicator[currentIndicator] = 1;
-            modeSwitch.saveMode(changeModeIndicator);
+            modeSwitch.setMode(changeModeIndicator);
             selectedMode = 0;
             isSelectingMode = false;
         }
