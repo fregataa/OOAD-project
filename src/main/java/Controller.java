@@ -352,11 +352,11 @@ public class Controller extends TimerTask {
         worldTime.changeTimeZone();
     }
 
-    public void reqChangePriceValue() {
+    public void reqChangePriceValue(int changeValue) {
         int maxTurnipValue = 600;
         int minTurnipValue = 0;
 
-        turnipValue += 1;
+        turnipValue += changeValue;
         if (turnipValue > maxTurnipValue) turnipValue = minTurnipValue;
         else if (turnipValue < minTurnipValue) turnipValue = maxTurnipValue;
     }

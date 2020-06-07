@@ -303,7 +303,7 @@ public class GUI extends JFrame implements ActionListener {
                     controller.reqChangeTimeZone();
                     break;
                 case 5:
-                    if(controller.getChanging()) controller.reqChangePriceValue();
+                    if(controller.getChanging()) controller.reqChangePriceValue(1);
                     else controller.reqSetting();
                     break;
                 default: break;
@@ -338,7 +338,7 @@ public class GUI extends JFrame implements ActionListener {
                 case 4:
                     break;
                 case 5:
-                    if (controller.getChanging()) controller.reqChangePriceValue();
+                    if (controller.getChanging()) controller.reqChangePriceValue(-1);
                     else controller.reqResetPrice();
                     break;
                 default: break;
