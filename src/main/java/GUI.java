@@ -140,12 +140,12 @@ public class GUI extends JFrame implements ActionListener {
             if(!controller.getIs24() && controller.getCurrentMode()!=3 && controller.getCurrentMode()!=5 ) {
                 try{
                     int seg12H = Integer.parseInt(segment1.substring(0,2));
-                    if(seg12H > 12) {
+                    if(seg12H > 11) {
                         this.image = loadImage("data/base/PM.png");
                         //12엔 0 아닌 12로 표시, 1시엔 1로 표시
-                        if(seg12H > 13){
-                            segment1 = seg12H%12 + segment1.substring(2,6);
-                            if(seg12H < 22){
+                        if(seg12H > 12) {
+                            segment1 = seg12H % 12 + segment1.substring(2, 6);
+                            if (seg12H < 22) {
                                 segment1 = "0" + segment1;
                             }
                         }
