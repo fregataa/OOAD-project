@@ -209,6 +209,7 @@ public class Controller extends TimerTask {
                 break;
             case 5:
                 turnipValue = turnipPrice.getTurnipPrice();
+                if(turnipValue == 0) turnipValue = 90;
                 break;
             default: break;
         }
@@ -356,7 +357,7 @@ public class Controller extends TimerTask {
 
     public void ChangePriceValue(int value) {
         int maxTurnipValue = 600;
-        int minTurnipValue = 90;
+        int minTurnipValue = 0;
 
         turnipValue += value;
         if (turnipValue > maxTurnipValue) turnipValue = minTurnipValue;
