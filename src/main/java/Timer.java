@@ -33,7 +33,7 @@ public class Timer extends TimerTask {
         runTime = timerTime;
     }
 
-
+    //TODO - 비효율적인것 같아요. 매개변수를 없앨수 있지않을까요
     public void startTimer(LocalTime runTime) {
         isStartedTimer = true;
         this.runTime = runTime;

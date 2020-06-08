@@ -38,7 +38,7 @@ public class WorldTime {
         this.currentPage=(this.currentPage+1)%25;
     }
 
-    void changeTimeZone() {
+    public void changeTimeZone() {
         timeKeeping.setTimeZone(ZoneId.of(location[this.currentPage]));
     }
 }
