@@ -49,7 +49,7 @@ public class TurnipPriceTest {
         //given
         this.turnipPrice.setTurnipPrice(100);
         //when
-        for(int i = 13;i<13;i++){
+        for(int i = 0;i<13;i++){
             this.turnipPrice.nextPrice();
         }
         //then

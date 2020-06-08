@@ -1,12 +1,14 @@
 import java.util.Random;
 
 public class TurnipCalc {
+    Random rand;
     TurnipCalc() {
+        rand = new Random();
     }
 
     public int[] calcPrice(int[] inputPrice, boolean[] isInputted){
         //random for estimate
-        Random rand = new Random();
+
 
         //1:감소 2: 발산 3:증가
         int whatMode = 1;
