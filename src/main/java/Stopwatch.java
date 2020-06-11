@@ -30,9 +30,11 @@ public class Stopwatch extends TimerTask{
 
 
     public void resetStopwatch(){
-        this.stopwatchTime = LocalTime.of(0,0,0);
-        this.lapTime = LocalTime.of(0,0,0);
-        isStartedStopwatch = false;
+        if(!isStartedStopwatch){
+            this.stopwatchTime = LocalTime.of(0,0,0);
+            this.lapTime = LocalTime.of(0,0,0);
+            isStartedStopwatch = false;
+        }
     }
 
     public void lapTime(){ lapTime = stopwatchTime; }

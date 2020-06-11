@@ -312,7 +312,8 @@ public class GUI extends JFrame implements ActionListener {
     }
 
     public void pressButtonD() {
-        if(controller.getIsBeeping()) controller.reqStopBeep(); {
+        if(controller.getIsBeeping()) controller.reqStopBeep();
+        else{
             switch (controller.getCurrentMode()) {
                 case 0:
                     if (controller.getChanging()) controller.changeUnitValue(-1);
