@@ -35,6 +35,6 @@ pmd {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'Calculator'
+        attributes 'Main-Class': 'GUI'
     }
 }
