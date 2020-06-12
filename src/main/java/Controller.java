@@ -394,7 +394,40 @@ public class Controller extends TimerTask {
             this.setModeIndicator(changeModeIndicator);
         } else if (selectedMode == 2) {
             changeModeIndicator[currentIndicator] = 1;
-            modeChecker();
+            for (int i = 1; i < 6; i++) {
+                if (modeSwitch.getEnabledMode()[i] == 1 && changeModeIndicator[i] == 0) {
+                    switch (i) {
+                        case 1:
+                            for (int j = 0; j < 4; j++) {
+                                if(alarm[j].getActivated()) alarm[j].deactivateAlarm();
+                                alarm[j] = null;
+                                alarm[j] = new Alarm();
+                            }
+                            break;
+                        case 2:
+                            stopwatch.cancel();
+                            stopwatch = null;
+                            stopwatch = new Stopwatch();
+                            break;
+                        case 3:
+                            timer.cancel();
+                            timer = null;
+                            timer = new Timer();
+                            break;
+                        case 4:
+                            worldTime = null;
+                            worldTime = new WorldTime();
+                            break;
+                        case 5:
+                            if(turnipPrice.getIsSetSetHighestDay()) turnipPrice.deactivateAlarm();
+                            turnipPrice = null;
+                            turnipPrice = new TurnipPrice();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
             modeSwitch.setMode(changeModeIndicator);
             selectedMode = 0;
             isSelectingMode = false;
@@ -419,48 +452,4 @@ public class Controller extends TimerTask {
         buzzer.stopBeep();
     }
 
-    public void modeChecker() {
-        int c = 1;
-        int[] modes = modeSwitch.getEnabledMode().clone();
-        while(c < changeModeIndicator.length) {
-            if(modes[c] * changeModeIndicator[c] == 1) {
-                c++;
-            }
-            else if(changeModeIndicator[c] == 1) {
-                switch (c) {
-                    case 1:
-                        alarm = new Alarm[4];
-                        for (int i = 0; i < 4; i++) {
-                            alarm[i] = new Alarm();
-                        }
-                    case 2:
-                        stopwatch = new Stopwatch();
-                    case 3:
-                        timer = new Timer();
-                    case 4:
-                        worldTime = new WorldTime();
-                    case 5:
-                        turnipPrice = new TurnipPrice();
-                }
-                c++;
-            }
-            else if (changeModeIndicator[c] == 0) {
-                switch (c) {
-                    case 1:
-                        alarm = null;
-                    case 2:
-                        //stopwatch = null;
-                    case 3:
-                        timer.pauseTimer();
-                        timer.setTimerTime(LocalTime.of(00,00,00));
-                        //timer = null;
-                    case 4:
-                        worldTime = null;
-                    case 5:
-                        turnipPrice = null;
-                }
-                c++;
-            }
-        }
-    }
 }
