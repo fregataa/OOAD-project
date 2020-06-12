@@ -27,7 +27,7 @@ public class WorldTime {
 
     public ZonedDateTime getWorldTime(){
         ZoneId id = ZoneId.of(location[this.currentPage]);
-        return timeKeeping.getCurrentTime().now(id);
+        return timeKeeping.getCurrentTime().withZoneSameInstant(id);
     }
 
     public String getUTCString(){

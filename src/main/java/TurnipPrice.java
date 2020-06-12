@@ -41,7 +41,7 @@ public class TurnipPrice {
     public String getTurnipDay() {
         String dayOfWeek[] = new String[]{"sun", "mon", "tue", "wed", "thu", "fri", "sat"};
         String timeOfDay[] = new String[]{"am-", "pm-"};
-        String whatDayOfWeek = timeOfDay[currentPage%2] + dayOfWeek[currentPage/2];
+        String whatDayOfWeek = timeOfDay[(currentPage+1)%2] + dayOfWeek[(currentPage+1)/2];
 
         if(price[currentPage] == 0){
             return whatDayOfWeek + "---";
