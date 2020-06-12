@@ -1,4 +1,3 @@
-import java.lang.reflect.UndeclaredThrowableException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -394,7 +393,6 @@ public class Controller extends TimerTask {
             this.setModeIndicator(changeModeIndicator);
         } else if (selectedMode == 2) {
             changeModeIndicator[currentIndicator] = 1;
-            modeChecker();
             modeSwitch.setMode(changeModeIndicator);
             selectedMode = 0;
             isSelectingMode = false;
@@ -417,50 +415,5 @@ public class Controller extends TimerTask {
     public void reqStopBeep() {
         buzzer.setIsBeeping(false);
         buzzer.stopBeep();
-    }
-
-    public void modeChecker() {
-        int c = 1;
-        int[] modes = modeSwitch.getEnabledMode().clone();
-        while(c < changeModeIndicator.length) {
-            if(modes[c] * changeModeIndicator[c] == 1) {
-                c++;
-            }
-            else if(changeModeIndicator[c] == 1) {
-                switch (c) {
-                    case 1:
-                        alarm = new Alarm[4];
-                        for (int i = 0; i < 4; i++) {
-                            alarm[i] = new Alarm();
-                        }
-                    case 2:
-                        stopwatch = new Stopwatch();
-                    case 3:
-                        timer = new Timer();
-                    case 4:
-                        worldTime = new WorldTime();
-                    case 5:
-                        turnipPrice = new TurnipPrice();
-                }
-                c++;
-            }
-            else if (changeModeIndicator[c] == 0) {
-                switch (c) {
-                    case 1:
-                        alarm = null;
-                    case 2:
-                        //stopwatch = null;
-                    case 3:
-                        timer.pauseTimer();
-                        timer.setTimerTime(LocalTime.of(00,00,00));
-                        //timer = null;
-                    case 4:
-                        worldTime = null;
-                    case 5:
-                        turnipPrice = null;
-                }
-                c++;
-            }
-        }
     }
 }
