@@ -378,6 +378,47 @@ public class Controller extends TimerTask {
         isSelectingMode = true;
         selectedMode = 0;
         currentIndicator = 1;
+        int c = 1;
+        int checker;
+        while(c < changeModeIndicator.length) {
+            checker = modeIndicator[c] * changeModeIndicator[c];
+            if(checker > 1) {
+                c++;
+            }
+            else if(checker > 0) {
+                switch (c) {
+                    case 1:
+                        alarm = new Alarm[4];
+                        for (int i = 0; i < 4; i++) {
+                            alarm[i] = new Alarm();
+                        }
+                    case 2:
+                        stopwatch = new Stopwatch();
+                    case 3:
+                        timer = new Timer();
+                    case 4:
+                        worldTime = new WorldTime();
+                    case 5:
+                        turnipPrice = new TurnipPrice();
+                }
+                c++;
+            }
+            else {
+                switch (c) {
+                    case 1:
+                        alarm = null;
+                    case 2:
+                        stopwatch = null;
+                    case 3:
+                        timer = null;
+                    case 4:
+                        worldTime = null;
+                    case 5:
+                        turnipPrice = null;
+                }
+                c++;
+            }
+        }
         this.setModeIndicator(changeModeIndicator);
     }
 
