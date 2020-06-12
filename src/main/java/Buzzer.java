@@ -23,13 +23,17 @@ public class Buzzer {
     }
 
     public void reqBeep() {
-        isBeeping = true;
-        clip.start();
-        try {
-            sleep(5000);
-        } catch (Exception e){e.printStackTrace();};
-        clip.stop();
-        setBeep();
+        if(!isBeeping) {
+            isBeeping = true;
+            clip.start();
+            try {
+                sleep(5000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            };
+            clip.stop();
+            setBeep();
+        }
     }
 
 
