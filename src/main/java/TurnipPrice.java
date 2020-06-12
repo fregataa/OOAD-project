@@ -104,4 +104,10 @@ public class TurnipPrice {
         timerTask.cancel();
         buzzer.stopBeep();
     }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        turnipThread.purge();
+    }
 }

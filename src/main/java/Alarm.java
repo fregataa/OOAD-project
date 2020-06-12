@@ -59,4 +59,10 @@ public class Alarm{
         timerTask.cancel();
         aBuzzer.stopBeep();
     }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        alarmThread.purge();
+    }
 }
