@@ -1,3 +1,4 @@
+import java.lang.reflect.UndeclaredThrowableException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -393,6 +394,40 @@ public class Controller extends TimerTask {
             this.setModeIndicator(changeModeIndicator);
         } else if (selectedMode == 2) {
             changeModeIndicator[currentIndicator] = 1;
+            for (int i = 1; i < 6; i++) {
+                if (modeSwitch.getEnabledMode()[i] == 1 && changeModeIndicator[i] == 0) {
+                    switch (i) {
+                        case 1:
+                            for (int j = 0; j < 4; j++) {
+                                if(alarm[j].getActivated()) alarm[j].deactivateAlarm();
+                                alarm[j] = null;
+                                alarm[j] = new Alarm();
+                            }
+                            break;
+                        case 2:
+                            stopwatch.cancel();
+                            stopwatch = null;
+                            stopwatch = new Stopwatch();
+                            break;
+                        case 3:
+                            timer.cancel();
+                            timer = null;
+                            timer = new Timer();
+                            break;
+                        case 4:
+                            worldTime = null;
+                            worldTime = new WorldTime();
+                            break;
+                        case 5:
+                            if(turnipPrice.getIsSetSetHighestDay()) turnipPrice.deactivateAlarm();
+                            turnipPrice = null;
+                            turnipPrice = new TurnipPrice();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
             modeSwitch.setMode(changeModeIndicator);
             selectedMode = 0;
             isSelectingMode = false;
@@ -416,4 +451,5 @@ public class Controller extends TimerTask {
         buzzer.setIsBeeping(false);
         buzzer.stopBeep();
     }
+
 }

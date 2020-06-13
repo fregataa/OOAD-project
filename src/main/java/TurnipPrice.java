@@ -38,6 +38,10 @@ public class TurnipPrice {
         }
     }
 
+    public boolean getIsSetSetHighestDay() {
+        return isSetHighestDay;
+    }
+
     public String getTurnipDay() {
         String dayOfWeek[] = new String[]{"sun", "mon", "tue", "wed", "thu", "fri", "sat"};
         String timeOfDay[] = new String[]{"am-", "pm-"};
@@ -99,7 +103,7 @@ public class TurnipPrice {
         turnipThread.scheduleAtFixedRate(timerTask, 0, 1000);
     }
 
-    private void deactivateAlarm(){
+    public void deactivateAlarm(){
         //Buzzer 등록된 타이머를 제거
         timerTask.cancel();
         buzzer.stopBeep();
