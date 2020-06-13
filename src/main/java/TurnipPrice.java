@@ -105,7 +105,10 @@ public class TurnipPrice {
 
     public void deactivateAlarm(){
         //Buzzer 등록된 타이머를 제거
-        timerTask.cancel();
+        if(timerTask!=null) {
+            timerTask.cancel();
+            turnipThread.purge();
+        }
         buzzer.stopBeep();
     }
 

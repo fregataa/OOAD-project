@@ -56,13 +56,10 @@ public class Alarm{
 
     public void deactivateAlarm(){
         this.isActivated = false;
-        timerTask.cancel();
+        if(timerTask!=null) {
+            timerTask.cancel();
+            alarmThread.purge();
+        }
         aBuzzer.stopBeep();
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-        alarmThread.purge();
     }
 }
