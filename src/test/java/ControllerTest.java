@@ -28,7 +28,7 @@ public class ControllerTest {
 
     @Test
     public void getTimeKeepingTime() throws InterruptedException {
-        Thread.sleep(10);
+        Thread.sleep(1000);
         assertThat(controller.getSegment1(),
                 is(LocalDateTime.now().format(DateTimeFormatter.ofPattern("HHmmss"))));
     }

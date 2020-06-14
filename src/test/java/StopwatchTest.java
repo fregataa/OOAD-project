@@ -69,6 +69,7 @@ public class StopwatchTest {
         Thread.sleep(1000);
 
         assertThat(time, is(not(stopwatch.getStopwatchTime())));
+        stopwatch.pauseStopwatch();
         stopwatch.resetStopwatch();
         assertThat(time, is(stopwatch.getStopwatchTime()));
     }

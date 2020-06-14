@@ -87,16 +87,16 @@ public class TurnipPrice {
         timerTask = new TimerTask() {
             @Override
             public void run() {
-                now = timeKeeping.getCurrentTime().toLocalDateTime();
-                if (finalMaxDay % 2 == 0) {
-                    if (12 == now.getHour() && (finalMaxDay + 1) / 2 == (now.getDayOfWeek().getValue()%7) && 0 == now.getMinute() && 0 == now.getSecond()) {
-                        buzzer.reqBeep();
-                    }
-                } else {
-                    if (9 == now.getHour() && (finalMaxDay + 1) / 2 == (now.getDayOfWeek().getValue()%7)  && 0 == now.getMinute() && 0 == now.getSecond()) {
-                        buzzer.reqBeep();
-                    }
+            now = timeKeeping.getCurrentTime().toLocalDateTime();
+            if (finalMaxDay % 2 == 0) {
+                if (12 == now.getHour() && (finalMaxDay + 1) / 2 == (now.getDayOfWeek().getValue()%7) && 0 == now.getMinute() && 0 == now.getSecond()) {
+                    buzzer.reqBeep();
                 }
+            } else {
+                if (9 == now.getHour() && (finalMaxDay + 1) / 2 == (now.getDayOfWeek().getValue()%7)  && 0 == now.getMinute() && 0 == now.getSecond()) {
+                    buzzer.reqBeep();
+                }
+            }
             }
         };
 
