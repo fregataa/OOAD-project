@@ -55,11 +55,12 @@ public class Alarm{
     }
 
     public void deactivateAlarm(){
-        this.isActivated = false;
         if(timerTask!=null) {
             timerTask.cancel();
+            alarmThread.cancel();
             alarmThread.purge();
         }
+        this.isActivated = false;
         aBuzzer.stopBeep();
     }
 }

@@ -107,14 +107,9 @@ public class TurnipPrice {
         //Buzzer 등록된 타이머를 제거
         if(timerTask!=null) {
             timerTask.cancel();
+            turnipThread.cancel();
             turnipThread.purge();
         }
         buzzer.stopBeep();
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-        turnipThread.purge();
     }
 }

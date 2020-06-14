@@ -395,11 +395,12 @@ public class Controller extends TimerTask {
         } else if (selectedMode == 2) {
             changeModeIndicator[currentIndicator] = 1;
             for (int i = 1; i < 6; i++) {
-                if (modeSwitch.getEnabledMode()[i] == 1 && changeModeIndicator[i] == 0) {
+                if (modeSwitch.getEnabledMode()[i] == 0 || changeModeIndicator[i] == 0) {
                     switch (i) {
                         case 1:
+                            currentPage = 0;
                             for (int j = 0; j < 4; j++) {
-                                if(alarm[j].getActivated()) alarm[j].deactivateAlarm();
+                                if(alarm[j].getActivated())alarm[j].deactivateAlarm();
                                 alarm[j] = null;
                                 alarm[j] = new Alarm();
                             }
@@ -419,7 +420,7 @@ public class Controller extends TimerTask {
                             worldTime = new WorldTime();
                             break;
                         case 5:
-                            if(turnipPrice.getIsSetSetHighestDay()) turnipPrice.deactivateAlarm();
+                            turnipPrice.deactivateAlarm();
                             turnipPrice = null;
                             turnipPrice = new TurnipPrice();
                             break;
