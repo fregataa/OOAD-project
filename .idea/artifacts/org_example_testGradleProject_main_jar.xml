@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="org.example.testGradleProject.main:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/org_example_testGradleProject_main_jar</output-path>
-    <root id="archive" name="org.example.testGradleProject.main.jar">
-      <element id="module-output" name="org.example.testGradleProject.main" />
-    </root>
-  </artifact>
-</component>
