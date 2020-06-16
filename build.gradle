@@ -69,10 +69,10 @@ test{
     useJUnit()
     ignoreFailures = true
 
-    jacoco {
-        destinationFile = file("$buildDir/jacoco/jacoco.exec")
-    }
-    useJUnitPlatform()
+//    jacoco {
+//        destinationFile = file("$buildDir/jacoco/jacoco.exec")
+//    }
+//    useJUnitPlatform()
 }
 
 checkstyle {
