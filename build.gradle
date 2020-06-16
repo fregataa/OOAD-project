@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'checkstyle'
     id 'pmd'
+    id 'jacoco'
 }
 
 group 'org.example'
@@ -10,9 +11,53 @@ version '1.0-SNAPSHOT'
 repositories {
     mavenCentral()
 }
+
 jar {
     manifest {
         attributes 'Main-class': 'GUI'
+    }
+}
+
+jacoco {
+    toolVersion = '0.8.5'
+}
+
+jacocoTestReport {
+    reports {
+        html.enabled true
+        xml.enabled true
+
+        html.destination file("$buildDir/jacocoHtml")
+        xml.destination file("$buildDir/jacoco.xml")
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                // counter = 'INSTRUCTION'
+                minimum = 0.00
+            }
+        }
+
+        rule {
+            enabled = true
+            element = 'CLASS'
+            limit {
+                counter = 'BRANCH'
+                minimum = 0.00
+            }
+
+            limit {
+                counter = 'LINE'
+                minimum = 0.00
+            }
+
+//            excludes = [
+//                    '*.test.*'
+//            ]
+        }
     }
 }
 
@@ -36,4 +81,17 @@ pmd {
     toolVersion = "6.21.0"
     rulePriority = 5
     ruleSets = ["category/java/bestpractices.xml"]
+}
+
+task testCoverage(type: Test) {
+    group 'verification'
+    description 'Runs the unit tests with coverage'
+
+    dependsOn( ':test',
+            ':jacocoTestReport',
+            ':jacocoTestCoverageVerification'
+    )
+
+    tasks['jacocoTestReport'].mustRunAfter(tasks['test'])
+    tasks['jacocoTestCoverageVerification'].mustRunAfter(tasks['jacocoTestReport'])
 }
