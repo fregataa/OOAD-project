@@ -68,6 +68,11 @@ dependencies {
 test{
     useJUnit()
     ignoreFailures = true
+
+    jacoco {
+        destinationFile = file("$buildDir/jacoco/jacoco.exec")
+    }
+    useJUnitPlatform()
 }
 
 checkstyle {
