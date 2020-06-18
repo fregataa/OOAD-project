@@ -56,9 +56,9 @@ public class Timer extends TimerTask {
             }
             else if(count_sec == 1){
                 runTime=runTime.minusSeconds(1);
-                buzzer.reqBeep();
                 isStartedTimer = false;
                 this.resetTimer();
+                buzzer.reqBeep();
             }
         }
     }

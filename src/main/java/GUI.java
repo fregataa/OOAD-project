@@ -91,10 +91,10 @@ public class GUI extends JFrame implements ActionListener {
         changeGUI gui = new changeGUI();
         gui.setSize(frameWidth,frameHeight);
 
-        pane.add(layer0, new Integer(0));
-        pane.add(panel, new Integer(1));
-        pane.add(layer1, new Integer(2));
-        pane.add(gui, new Integer(3));
+        pane.add(layer0, Integer.valueOf(0));
+        pane.add(panel, Integer.valueOf(1));
+        pane.add(layer1, Integer.valueOf(2));
+        pane.add(gui, Integer.valueOf(3));
 
         add(pane);
         setVisible(true);
@@ -104,12 +104,8 @@ public class GUI extends JFrame implements ActionListener {
     }
 
     public class changeGUI extends JPanel {
+        
         private BufferedImage image;
-        private int[] modeIndicator;
-        private String segment1;
-        private String segment2;
-        private String[] segPath1;
-        private String[] segPath2;
 
         public changeGUI() {
             setOpaque(false);
@@ -127,6 +123,12 @@ public class GUI extends JFrame implements ActionListener {
 
         @Override
         public void paint(Graphics g) {
+            int[] modeIndicator;
+            String segment1;
+            String segment2;
+            String[] segPath1;
+            String[] segPath2;
+        
             //controller 쪽에서 정보를 가져오고, 해당 정보가 기존 정보와 다를 경우 다시 그려짐.
             super.paintComponent(g);
 
@@ -137,7 +139,8 @@ public class GUI extends JFrame implements ActionListener {
             segPath2 = new String[9];
 
             /* AM/PM */
-            if(!controller.getIs24() && controller.getCurrentMode()!=3 && controller.getCurrentMode()!=5 ) {
+            if(!controller.getIs24() && !controller.getIsSelectingMode() && controller.getCurrentMode()!=2
+                    && controller.getCurrentMode()!=3 && controller.getCurrentMode()!=5 ) {
                 try{
                     int seg12H = Integer.parseInt(segment1.substring(0,2));
                     if(seg12H > 11) {
@@ -155,10 +158,8 @@ public class GUI extends JFrame implements ActionListener {
                     }
                     g.drawImage(this.image, 115, 295, 20, 28, this);
                 }catch(NumberFormatException e){
-
+                    e.printStackTrace();
                 }
-
-
             }
 
 

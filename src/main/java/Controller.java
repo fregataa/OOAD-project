@@ -1,4 +1,4 @@
-import java.lang.reflect.UndeclaredThrowableException;
+
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -401,27 +401,22 @@ public class Controller extends TimerTask {
                             currentPage = 0;
                             for (int j = 0; j < 4; j++) {
                                 if(alarm[j].getActivated())alarm[j].deactivateAlarm();
-                                alarm[j] = null;
                                 alarm[j] = new Alarm();
                             }
                             break;
                         case 2:
                             stopwatch.cancel();
-                            stopwatch = null;
                             stopwatch = new Stopwatch();
                             break;
                         case 3:
                             timer.cancel();
-                            timer = null;
                             timer = new Timer();
                             break;
                         case 4:
-                            worldTime = null;
                             worldTime = new WorldTime();
                             break;
                         case 5:
                             turnipPrice.deactivateAlarm();
-                            turnipPrice = null;
                             turnipPrice = new TurnipPrice();
                             break;
                         default:
@@ -449,7 +444,6 @@ public class Controller extends TimerTask {
     }
 
     public void reqStopBeep() {
-        buzzer.setIsBeeping(false);
         buzzer.stopBeep();
     }
 

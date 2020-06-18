@@ -42,15 +42,11 @@ public class Alarm{
             @Override
             public void run() {
                 now = timeKeeping.getCurrentTime().toLocalTime();
-                //if(alarmTime.compareTo(now) == 0)
-                //aBuzzer.reqBeep();
-
-                if(alarmTime.getHour() == now.getHour() && alarmTime.getMinute() == now.getMinute() && 0==now.getSecond()) {
+                if(isActivated && alarmTime.getHour() == now.getHour() && alarmTime.getMinute() == now.getMinute() && 0==now.getSecond()) {
                     aBuzzer.reqBeep();
                 }
             }
         };
-
         alarmThread.scheduleAtFixedRate(timerTask, 0, 1000);
     }
 
