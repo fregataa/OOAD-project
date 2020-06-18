@@ -91,10 +91,10 @@ public class GUI extends JFrame implements ActionListener {
         changeGUI gui = new changeGUI();
         gui.setSize(frameWidth,frameHeight);
 
-        pane.add(layer0, new Integer(0));
-        pane.add(panel, new Integer(1));
-        pane.add(layer1, new Integer(2));
-        pane.add(gui, new Integer(3));
+        pane.add(layer0, Integer.valueOf(0));
+        pane.add(panel, Integer.valueOf(1));
+        pane.add(layer1, Integer.valueOf(2));
+        pane.add(gui, Integer.valueOf(3));
 
         add(pane);
         setVisible(true);
@@ -139,7 +139,8 @@ public class GUI extends JFrame implements ActionListener {
             segPath2 = new String[9];
 
             /* AM/PM */
-            if(!controller.getIs24() && controller.getCurrentMode()!=2 && controller.getCurrentMode()!=3 && controller.getCurrentMode()!=5 ) {
+            if(!controller.getIs24() && !controller.getIsSelectingMode() && controller.getCurrentMode()!=2
+                    && controller.getCurrentMode()!=3 && controller.getCurrentMode()!=5 ) {
                 try{
                     int seg12H = Integer.parseInt(segment1.substring(0,2));
                     if(seg12H > 11) {
