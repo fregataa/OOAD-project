@@ -6,30 +6,26 @@ import java.io.*;
 import static java.lang.Thread.sleep;
 
 public class Buzzer {
-    static private Clip clip;
-    static private AudioInputStream beepSound;
+    private static Clip clip;
 
-    static public boolean getIsBeeping() {
+    public static boolean getIsBeeping() {
         return clip.isActive();
     }
 
-    Buzzer() {
-        setBeep();
-    }
-
-    static public void reqBeep() {
+    public static void reqBeep() {
         if(!clip.isActive()) {
             clip.setFramePosition(0);
             clip.start();
         }
     }
 
-    static public void stopBeep() {
+    public static void stopBeep() {
         clip.stop();
         clip.setFramePosition(0);
     }
 
-    static public void setBeep() {
+    public static void setBeep() {
+        AudioInputStream beepSound;
         try {
             beepSound = AudioSystem.getAudioInputStream(new File("beep.wav"));
             clip = AudioSystem.getClip();

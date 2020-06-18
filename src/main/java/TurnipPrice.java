@@ -14,12 +14,10 @@ public class TurnipPrice {
     private TimerTask timerTask;
     private Timer turnipThread;
     private TurnipCalc turnipCalc;
-    private Buzzer buzzer;
 
     TurnipPrice() {
         this.turnipThread = new Timer();
         turnipCalc = new TurnipCalc();
-        this.buzzer = new Buzzer();
     }
 
     public int getTurnipPrice() {
@@ -90,11 +88,11 @@ public class TurnipPrice {
             now = timeKeeping.getCurrentTime().toLocalDateTime();
             if (finalMaxDay % 2 == 0) {
                 if (12 == now.getHour() && (finalMaxDay + 1) / 2 == (now.getDayOfWeek().getValue()%7) && 0 == now.getMinute() && 0 == now.getSecond()) {
-                    buzzer.reqBeep();
+                    Buzzer.reqBeep();
                 }
             } else {
                 if (9 == now.getHour() && (finalMaxDay + 1) / 2 == (now.getDayOfWeek().getValue()%7)  && 0 == now.getMinute() && 0 == now.getSecond()) {
-                    buzzer.reqBeep();
+                    Buzzer.reqBeep();
                 }
             }
             }
@@ -110,6 +108,6 @@ public class TurnipPrice {
             turnipThread.cancel();
             turnipThread.purge();
         }
-        buzzer.stopBeep();
+        Buzzer.stopBeep();
     }
 }

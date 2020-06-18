@@ -7,7 +7,6 @@ public class Alarm{
     private LocalTime now;
     private boolean isActivated;
     private Timer alarmThread;
-    private Buzzer aBuzzer;
     private TimerTask timerTask;
     private TimeKeeping timeKeeping = TimeKeeping.getInstance();
 
@@ -30,7 +29,6 @@ public class Alarm{
     Alarm() {
         this.alarmTime = LocalTime.of(00,00,00);
         this.isActivated = false;
-        this.aBuzzer = new Buzzer();
         this.alarmThread = new Timer();
     }
 
@@ -43,7 +41,7 @@ public class Alarm{
             public void run() {
                 now = timeKeeping.getCurrentTime().toLocalTime();
                 if(isActivated && alarmTime.getHour() == now.getHour() && alarmTime.getMinute() == now.getMinute() && 0==now.getSecond()) {
-                    aBuzzer.reqBeep();
+                    Buzzer.reqBeep();
                 }
             }
         };
@@ -57,6 +55,6 @@ public class Alarm{
             alarmThread.purge();
         }
         this.isActivated = false;
-        aBuzzer.stopBeep();
+        Buzzer.stopBeep();
     }
 }

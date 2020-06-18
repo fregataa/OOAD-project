@@ -33,7 +33,6 @@ public class Controller extends TimerTask {
     private WorldTime worldTime = new WorldTime();
     private TurnipPrice turnipPrice = new TurnipPrice();
     private ModeSwitch modeSwitch = new ModeSwitch();
-    private Buzzer buzzer = new Buzzer();
     private Timeout timeout = new Timeout();
 
     ///////////////////////////////////////////////////////
@@ -101,7 +100,7 @@ public class Controller extends TimerTask {
     }
 
     public boolean getIsBeeping() {
-        return buzzer.getIsBeeping();
+        return Buzzer.getIsBeeping();
     }
 
     ///////////////////////////////////////////////////////
@@ -115,6 +114,7 @@ public class Controller extends TimerTask {
         is24 = true;
         currentPage = 0;
         modeIndicator=modeSwitch.getEnabledMode();
+        Buzzer.setBeep();
     }
 
     @Override
@@ -130,6 +130,7 @@ public class Controller extends TimerTask {
             isChanging = false;
         }
 
+        String norTimeType = "HHmmss";
         if(isSelectingMode){
            this.setSegment1("------");
            this.setSegment2("Modchange");
@@ -138,13 +139,13 @@ public class Controller extends TimerTask {
             switch (getCurrentMode()) {
             case 0:
                 if(!isChanging) currentTime = timeKeeping.getCurrentTime();
-                this.setSegment1(currentTime.format(DateTimeFormatter.ofPattern("HHmmss")));
+                this.setSegment1(currentTime.format(DateTimeFormatter.ofPattern(norTimeType)));
                 this.setSegment2(currentTime.format(DateTimeFormatter.ofPattern("eeeyyMMdd", Locale.ENGLISH)));
                 break;
             case 1:
                 String temp = "-----0"+(currentPage+1)+"--";
                 if(!isChanging) this.currentTime = ZonedDateTime.of(timeKeeping.getCurrentTime().toLocalDate(), alarm[currentPage].getAlarmTime(), timeKeeping.getCurrentTime().getZone());
-                this.setSegment1(currentTime.format(DateTimeFormatter.ofPattern("HHmmss")));
+                this.setSegment1(currentTime.format(DateTimeFormatter.ofPattern(norTimeType)));
                 if(getIsActivatedAlarm()) setSegment2("set"+temp.substring(3));
                 else setSegment2("---"+temp.substring(3));
                 break;
@@ -154,23 +155,24 @@ public class Controller extends TimerTask {
                 else this.setSegment2("lap" + stopwatch.getLapTime().format(DateTimeFormatter.ofPattern("mmssSS")));
                 break;
             case 3:
-                if((isActivatedTimer=timer.getIsStartedTimer())) {
-                    this.setSegment1(timer.getRunTime().format(DateTimeFormatter.ofPattern("HHmmss")));
+                isActivatedTimer = timer.getIsStartedTimer();
+                if((isActivatedTimer)) {
+                    this.setSegment1(timer.getRunTime().format(DateTimeFormatter.ofPattern(norTimeType)));
                     this.setSegment2("------run");
                 }
                 else {
                     if(isChanging) {
-                        this.setSegment1(this.currentTime.format(DateTimeFormatter.ofPattern("HHmmss")));
+                        this.setSegment1(this.currentTime.format(DateTimeFormatter.ofPattern(norTimeType)));
                         this.setSegment2("------set");
                     } else {
-                        this.setSegment1(timer.getRunTime().format(DateTimeFormatter.ofPattern("HHmmss")));
+                        this.setSegment1(timer.getRunTime().format(DateTimeFormatter.ofPattern(norTimeType)));
                         this.setSegment2("-----wait");
                     }
                 }
                 break;
             case 4:
                 currentTime=worldTime.getWorldTime();
-                this.setSegment1(currentTime.format(DateTimeFormatter.ofPattern("HHmmss")));
+                this.setSegment1(currentTime.format(DateTimeFormatter.ofPattern(norTimeType)));
                 this.setSegment2(worldTime.getUTCString());
                 break;
             case 5:
@@ -444,7 +446,7 @@ public class Controller extends TimerTask {
     }
 
     public void reqStopBeep() {
-        buzzer.stopBeep();
+        Buzzer.stopBeep();
     }
 
 }

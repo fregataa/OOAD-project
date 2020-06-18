@@ -6,7 +6,6 @@ public class Timer extends TimerTask {
     private LocalTime runTime;
     private int count_sec;
     private boolean isStartedTimer;
-    private Buzzer buzzer = new Buzzer();
 
     public LocalTime getTimerTime() {
         return timerTime;
@@ -58,7 +57,7 @@ public class Timer extends TimerTask {
                 runTime=runTime.minusSeconds(1);
                 isStartedTimer = false;
                 this.resetTimer();
-                buzzer.reqBeep();
+                Buzzer.reqBeep();
             }
         }
     }
