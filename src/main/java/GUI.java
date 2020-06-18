@@ -104,12 +104,8 @@ public class GUI extends JFrame implements ActionListener {
     }
 
     public class changeGUI extends JPanel {
+        
         private BufferedImage image;
-        private int[] modeIndicator;
-        private String segment1;
-        private String segment2;
-        private String[] segPath1;
-        private String[] segPath2;
 
         public changeGUI() {
             setOpaque(false);
@@ -127,6 +123,12 @@ public class GUI extends JFrame implements ActionListener {
 
         @Override
         public void paint(Graphics g) {
+            int[] modeIndicator;
+            String segment1;
+            String segment2;
+            String[] segPath1;
+            String[] segPath2;
+        
             //controller 쪽에서 정보를 가져오고, 해당 정보가 기존 정보와 다를 경우 다시 그려짐.
             super.paintComponent(g);
 

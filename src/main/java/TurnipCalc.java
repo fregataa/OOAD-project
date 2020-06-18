@@ -67,18 +67,18 @@ public class TurnipCalc {
                     inputPrice[j] = (int) (((Math.min(inputPrice[j - 1], inputPrice[0])) * 0.95) - rand.nextInt(4));
                 }
                 break;
-            //발산
-            case(2):
-                for(int j = end+1;j<13;j++){
-                    inputPrice[j] = inputPrice[0]+rand.nextInt(40)-20;
-                }
-                break;
             //증가
             case(3):
                 //대박의 날
                 inputPrice[end+1] = 400 + rand.nextInt(200);
                 for(int j = end+2;j<13;j++){
                     inputPrice[j] = (int) (((Math.min(inputPrice[j - 1], inputPrice[0])) * 0.95) - rand.nextInt(4));
+                }
+                break;
+            //발산
+            default:
+                for(int j = end+1;j<13;j++){
+                    inputPrice[j] = inputPrice[0]+rand.nextInt(40)-20;
                 }
                 break;
         }

@@ -6,8 +6,8 @@ import java.io.*;
 import static java.lang.Thread.sleep;
 
 public class Buzzer {
-    static Clip clip;
-    static AudioInputStream beepSound;
+    static private Clip clip;
+    static private AudioInputStream beepSound;
 
     static public boolean getIsBeeping() {
         return clip.isActive();
