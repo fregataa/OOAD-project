@@ -449,7 +449,6 @@ public class Controller extends TimerTask {
     }
 
     public void reqStopBeep() {
-        buzzer.setIsBeeping(false);
         buzzer.stopBeep();
     }
 

@@ -1,15 +1,16 @@
+import java.util.Date;
 import java.util.Random;
 
 public class TurnipCalc {
     Random rand;
+    Date time;
     TurnipCalc() {
         rand = new Random();
     }
 
     public int[] calcPrice(int[] inputPrice, boolean[] isInputted){
         //random for estimate
-
-
+        rand.setSeed(time.getTime());
         //1:감소 2: 발산 3:증가
         int whatMode = 1;
         //일요일 값이 안들어 있을때를 위해
@@ -19,7 +20,6 @@ public class TurnipCalc {
         int previous = inputPrice[0];
         int skipCount = 0;
         int end = 0;
-
         //감소 증가 여부 찾기
         for(int i = 1; i <13; i++) {
             if (isInputted[i]){

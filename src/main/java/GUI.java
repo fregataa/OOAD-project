@@ -137,7 +137,7 @@ public class GUI extends JFrame implements ActionListener {
             segPath2 = new String[9];
 
             /* AM/PM */
-            if(!controller.getIs24() && controller.getCurrentMode()!=3 && controller.getCurrentMode()!=5 ) {
+            if(!controller.getIs24() && controller.getCurrentMode()!=2 && controller.getCurrentMode()!=3 && controller.getCurrentMode()!=5 ) {
                 try{
                     int seg12H = Integer.parseInt(segment1.substring(0,2));
                     if(seg12H > 11) {
@@ -155,10 +155,8 @@ public class GUI extends JFrame implements ActionListener {
                     }
                     g.drawImage(this.image, 115, 295, 20, 28, this);
                 }catch(NumberFormatException e){
-
+                    e.printStackTrace();
                 }
-
-
             }
 
 

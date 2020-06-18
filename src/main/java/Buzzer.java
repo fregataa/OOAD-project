@@ -6,48 +6,34 @@ import java.io.*;
 import static java.lang.Thread.sleep;
 
 public class Buzzer {
-    static boolean isBeeping;
     static Clip clip;
     static AudioInputStream beepSound;
 
-    public boolean getIsBeeping() {
-        return isBeeping;
-    }
-
-    public void setIsBeeping(boolean isBeeping) {
-        this.isBeeping = isBeeping;
+    static public boolean getIsBeeping() {
+        return clip.isActive();
     }
 
     Buzzer() {
         setBeep();
     }
 
-    public void reqBeep() {
-        if(!isBeeping) {
-            isBeeping = true;
+    static public void reqBeep() {
+        if(!clip.isActive()) {
+            clip.setFramePosition(0);
             clip.start();
-            try {
-                sleep(5000);
-            } catch (Exception e) {
-                e.printStackTrace();
-            };
-            clip.stop();
-            setBeep();
         }
     }
 
-
-    public void stopBeep() {
+    static public void stopBeep() {
         clip.stop();
-        setBeep();
+        clip.setFramePosition(0);
     }
 
-    public void setBeep() {
-        isBeeping = false;
+    static public void setBeep() {
         try {
-            this.beepSound = AudioSystem.getAudioInputStream(new File("beep.wav"));
-            this.clip = AudioSystem.getClip();
-            this.clip.open(beepSound);
+            beepSound = AudioSystem.getAudioInputStream(new File("beep.wav"));
+            clip = AudioSystem.getClip();
+            clip.open(beepSound);
 
         } catch (Exception e) {
             e.printStackTrace();
